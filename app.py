@@ -67,6 +67,7 @@ def login_redirect(sender):
 
     # TODO: change to a redirect to the page form
     # close tab
+    log(request.get_json())
     return render_template('login_redirect_landing.html')
 
 

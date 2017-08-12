@@ -33,7 +33,7 @@ def receivedMessage(sender, recipient, message):
 
 
 def sendLogin(sender):
-    redirect = url_for("login_redirect", sender=sender, _external=True)    # TODO might need to set SERVER_NAME var
+    redirect = url_for("login_redirect", sender=sender, _external=True)
     scopes = ",".join(["manage_pages", "publish_pages"])
     url = "https://www.facebook.com/v2.9/dialog/oauth?display=popup&redirect_uri={}&client_id={}&scope={}".format(redirect, APP_ID, scopes)
     button = URLButton("Grant access", url)
