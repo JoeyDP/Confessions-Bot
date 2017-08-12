@@ -38,10 +38,11 @@ def getClientTokenFromCode(sender, code):
 
 def listManagedPages(clientToken):
     # TODO: paging
-    debug("Fetching pages")
-    data = queryFacebook("me/accounts", clientToken, ["access_token", "name", "id"])
-    debug("pages data:" + str(data))
-    return data
+    response = queryFacebook("me/accounts", clientToken, ["access_token", "name", "id"])
+    debug("pages data:" + str(response))
+    if response:
+        return response.get("data")
+    return None
 
 
 def pageUrl(pageID):
