@@ -25,8 +25,8 @@ def makeRequest(endpoint, **parameters):
         return None
 
 
-def queryFacebook(endpoint, accessToken, fields):
-    return makeRequest(endpoint, access_token=accessToken, fields=",".join(fields))
+def queryFacebook(endpoint, accessToken, fields, **parameters):
+    return makeRequest(endpoint, access_token=accessToken, fields=",".join(fields), **parameters)
 
 
 def getClientTokenFromCode(sender, code):
@@ -47,7 +47,7 @@ def listManagedPages(clientToken):
 
 
 def getPageProfilePictureUrl(pageID, clientToken):
-    response = queryFacebook(str(pageID) + "/picture", clientToken, ["url"])
+    response = queryFacebook(str(pageID) + "/picture", clientToken, [], redirect="false")
     if response:
         return response["data"].get("url")
 
