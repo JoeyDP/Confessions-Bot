@@ -145,12 +145,12 @@ class postback:
 
 
 class Button:
-    def __init__(self, text, postback):
+    def __init__(self, text, data):
         self.text = text
-        if type(postback) == dict:
-            self.payload = postback
-        elif type(postback) == postback:
-            self.payload = postback.payload
+        if type(data) == dict:
+            self.payload = data
+        elif type(data) == postback:
+            self.payload = data.payload
         else:
             raise RuntimeError("Button payload has unknown type: " + str(type(postback)))
 
