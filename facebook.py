@@ -16,6 +16,8 @@ def makeRequest(endpoint, **parameters):
     url = urljoin(BASE_URL, endpoint)
     r = requests.get(url, params=parameters)
     if r.status_code == 200:
+        debug("Url: " + str(url))
+        debug("Response: " + str(r.text))
         return json.loads(r.text)
     else:
         log("Failed to query {}".format(url))
@@ -39,7 +41,6 @@ def getClientTokenFromCode(sender, code):
 def listManagedPages(clientToken):
     # TODO: paging
     response = queryFacebook("me/accounts", clientToken, ["access_token", "name", "id"])
-    debug("pages data:" + str(response))
     if response:
         return response.get("data")
     return None
