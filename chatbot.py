@@ -69,12 +69,13 @@ def actualListPages(sender, clientToken):
             pagesMessage = GenericMessage()
             for i in range(start, min(start+10, len(pages))):
                 page = pages[i]
-                id = page["id"]
+                pageID = page["id"]
                 name = page["name"]
                 token = page["access_token"]
                 url = facebook.pageUrl(page.id)
-                element = Element(page.name, "", url)
-                element.addButton(Button("Manage", managePage(pageID=id, name=name, token=token)))
+                imageURL = facebook.getPageProfilePictureUrl(pageID)
+                element = Element(page.name, "", url, imageURL)
+                element.addButton(Button("Manage", managePage(pageID=pageID, name=name, token=token)))
                 pagesMessage.addElement(element)
             pagesMessage.send(sender)
 

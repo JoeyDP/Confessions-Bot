@@ -45,6 +45,10 @@ def listManagedPages(clientToken):
     return None
 
 
+def getPageProfilePictureUrl(pageID):
+    return urljoin(BASE_URL, pageID, "picture")
+
+
 def pageUrl(pageID):
     return urljoin(FB_URL, str(pageID))
 
