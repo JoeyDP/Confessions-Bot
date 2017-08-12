@@ -159,10 +159,8 @@ class Button:
         self.text = text
         if type(data) == dict:
             self.payload = data
-        elif type(data) == postback:
-            self.payload = data.payload
         else:
-            raise RuntimeError("Button payload has unknown type: " + str(type(postback)))
+            raise RuntimeError("Button payload has unknown type: " + str(type(data)))
 
     def getData(self):
         return {
