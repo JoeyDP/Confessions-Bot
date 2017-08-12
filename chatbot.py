@@ -28,7 +28,6 @@ def receivedMessage(sender, recipient, message):
             report.send(ADMIN_SENDER_ID)
         return
 
-    sendWelcome(sender)
     message = ButtonMessage("Pick one:", Button("List Pages", listPages))
     message.send(sender)
 
@@ -56,12 +55,13 @@ def receivedPostback(sender, recipient, payload):
         response.send(sender)
         return
 
-    type = payload.get("type")
+    data = json.loads(payload)
+    type = data.get("type")
     if not type:
         raise RuntimeError("No 'type' included in postback.")
 
     if type == "action":
-        action = payload["action"]
+        action = data["action"]
         pb = postback.registered.get(action)
         if not pb:
             raise RuntimeError("No postback for action '{}'.".format(action))
