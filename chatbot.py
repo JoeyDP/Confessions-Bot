@@ -26,10 +26,7 @@ def receivedMessage(sender, recipient, message):
             report.send(ADMIN_SENDER_ID)
         return
 
-    test = ButtonMessage("This is a test", Button("page 6666", managePage(pageID=6666)))
-    test.send(sender)
     sendLogin(sender)
-
 
 
 def sendLogin(sender):

@@ -29,7 +29,7 @@ def queryFacebook(endpoint, accessToken, fields):
 
 def getClientTokenFromCode(sender, code):
     redirect = loginRedirectURI(sender)
-    data = makeRequest("access_token", client_id=APP_ID, redirect_uri=redirect, client_secret=CLIENT_SECRET, code=code)
+    data = makeRequest("oauth/access_token", client_id=APP_ID, redirect_uri=redirect, client_secret=CLIENT_SECRET, code=code)
     if not data:
         return None
 
