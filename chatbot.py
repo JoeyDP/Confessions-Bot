@@ -49,18 +49,6 @@ def sendLogin(person):
 #   Postbacks   #
 #################
 
-# decorator
-class postback:
-    registered = dict()
-    def __init__(self, func):
-        self.func = func
-        self.type = "action"
-        self.action = id(func)
-        postback.registered[self.action] = self
-
-    def __call__(self, *args, **kwargs):
-        self.func(*args, **kwargs)
-
 
 def receivedPostback(sender, recipient, payload):
     log("Received postback with payload \"{}\" from {}".format(payload, sender))

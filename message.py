@@ -128,12 +128,32 @@ class Element:
         self.buttons.append(Button(text, payload))
 
 
+# decorator
+class postback:
+    registered = dict()
+    def __init__(self, func):
+        self.func = func
+        postback.registered[self.action] = self
+        action = func
+        self.payload = {
+            "type": "action",
+            "action": action,
+        }
+
+    def __call__(self, *args, **kwargs):
+        self.func(*args, **kwargs)
+
+
 class Button:
-    def __init__(self, text, payload):
+    def __init__(self, text, postback):
         self.text = text
-        self.payload = payload
-        if not self.payload.get("type"):
-            raise RuntimeError("Button payload should include 'type' field.")
+        if type(postback) == dict:
+            self.payload = postback
+        elif type(postback) == postback:
+            self.payload = postback.payload
+        else:
+            raise RuntimeError("Button payload has unknown type: " + str(type(postback)))
+
 
     def getData(self):
         return {
