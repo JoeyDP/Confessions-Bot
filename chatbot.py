@@ -28,6 +28,8 @@ def receivedMessage(sender, recipient, message):
             report.send(ADMIN_SENDER_ID)
         return
 
+    test = ButtonMessage("This is a test", managePage(6666))
+    test.send(sender)
     sendLogin(sender)
 
 
@@ -41,9 +43,44 @@ def sendLogin(sender):
     loginMessage.send(sender)
 
 
-def loggedIn(sender):
+def loggedIn(sender, code):
     log("Login successful!")
     log(sender)
+
+    clientToken = facebook.getClientTokenFromCode(code)
+    if clientToken:
+        status = actualListPages(sender, clientToken)
+        if status:
+            return
+
+    message = TextMessage("Couldn't access your pages, please try again:")
+    message.send(sender)
+    sendLogin(sender)
+
+
+def actualListPages(sender, clientToken):
+    pages = facebook.listManagedPages(clientToken)
+    if pages is None:
+        return False
+    if len(pages) == 0:
+        message = TextMessage("Couldn't find any pages that you manage.")
+        message.send(sender)
+    else:
+        message = TextMessage("Found these pages. Select which ones you want me to help manage.")
+        message.send(sender)
+
+        # group pages by 10
+        for start in range(((len(pages)-1)//10)+1):
+            pagesMessage = GenericMessage()
+            for i in range(start, min(start+10, len(pages))):
+                page = pages[i]
+                url = facebook.pageUrl(page.id)
+                element = Element(page.name, "", url)
+                element.addButton(Button("Manage", managePage(page.id)))
+                pagesMessage.addElement(element)
+            pagesMessage.send(sender)
+
+    return True
 
 
 #################
@@ -65,10 +102,11 @@ def receivedPostback(sender, recipient, payload):
 
     if type == "action":
         action = data["action"]
-        pb = postback.registered.get(action)
+        pb = Postback.registered.get(action)
+        args = data.get("args", dict())
         if not pb:
             raise RuntimeError("No postback for action '{}'.".format(action))
-        pb(sender)
+        pb(sender, **args)
 
 
 @postback
@@ -80,10 +118,14 @@ def sendWelcome(sender):
 
 @postback
 def listPages(sender):
-    message = TextMessage("I will now list your pages.")
+    """ Doesn't actually list pages. Need permission first. (See actualListPages) """
+    sendLogin(sender)
+
+
+@postback
+def managePage(sender, pageID=None):
+    message = TextMessage("You want me to manage page: " + str(pageID))
     message.send(sender)
-
-
 
 
 #################

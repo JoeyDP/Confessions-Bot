@@ -62,12 +62,12 @@ def login_redirect(sender):
     """ endpoint for redirect after login. """
     @after_this_request
     def afterLogin():
-        if sender:
-            chatbot.loggedIn(sender)
+        code = request.args.get("code")
+        if sender and code:
+            chatbot.loggedIn(sender, code)
 
     # TODO: change to a redirect to the page form
     # close tab
-    log(request.get_json())
     return render_template('login_redirect_landing.html')
 
 

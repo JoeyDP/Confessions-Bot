@@ -37,7 +37,7 @@ def getStartedButtonData(payload=None):
         }
     data = {
         "get_started": {
-            "payload": json.dumps(chatbot.sendWelcome.payload)
+            "payload": json.dumps(chatbot.sendWelcome())
         }
     }
     return data
@@ -67,7 +67,7 @@ def getMenuData():
                     {
                         "title": "List pages",
                         "type": "postback",
-                        "payload": json.dumps(chatbot.listPages.payload)
+                        "payload": json.dumps(chatbot.listPages())
                     }
                 ]
             },

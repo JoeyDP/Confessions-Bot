@@ -41,6 +41,9 @@ class Page(SQLBase, Base):
     __tablename__ = "page"
 
     fbID = Column(String(128), primary_key=True)
+    # token
+    # admin sender id
+    # name
 
 
 class Confession(SQLBase, Base):

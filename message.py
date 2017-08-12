@@ -128,21 +128,30 @@ class Element:
         self.buttons.append(Button(text, payload))
 
 
-# decorator
-class postback:
-    registered = dict()
-
-    def __init__(self, func):
-        self.func = func
-        action = func.__name__
-        postback.registered[action] = self
-        self.payload = {
+def postback(func):
+    action = func.__name__
+    Postback.registered[action] = func
+    def wrap(**kwargs):
+        # pb = Postback(action, **kwargs)
+        # return pb
+        return {
             "type": "action",
             "action": action,
+            "args": kwargs,
         }
+    return wrap
 
-    def __call__(self, *args, **kwargs):
-        self.func(*args, **kwargs)
+
+# decorator
+class Postback:
+    registered = dict()
+
+    # def __init__(self, action, **kwargs):
+    #     self.payload = {
+    #         "type": "action",
+    #         "action": action,
+    #         "args": kwargs,
+    #     }
 
 
 class Button:
