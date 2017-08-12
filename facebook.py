@@ -49,7 +49,7 @@ def listManagedPages(clientToken):
 def getPageProfilePictureUrl(pageID, clientToken):
     response = queryFacebook(str(pageID) + "/picture", clientToken, ["url"])
     if response:
-        return response.get("url")
+        return response["data"].get("url")
 
 
 def pageUrl(pageID):
