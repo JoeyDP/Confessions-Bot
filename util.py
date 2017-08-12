@@ -1,0 +1,23 @@
+import os
+import sys
+import json
+from flask_babel import LazyString
+
+# If in debug mode.
+DEBUG = os.getenv("DEBUG", False)
+
+
+def log(message, debug=False):
+    """ Simple wrapper for logging to stdout on heroku. """
+    if debug and not DEBUG:     # Do not print debug if not requested
+        return
+
+    print(message)
+    sys.stdout.flush()
+
+
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, LazyString):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)
