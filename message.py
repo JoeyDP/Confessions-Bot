@@ -133,8 +133,8 @@ class postback:
     registered = dict()
     def __init__(self, func):
         self.func = func
-        postback.registered[self.action] = self
-        action = func
+        action = func.__name__
+        postback.registered[action] = self
         self.payload = {
             "type": "action",
             "action": action,

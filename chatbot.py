@@ -43,8 +43,6 @@ def sendLogin(person):
     loginMessage.send(person.fbID)
 
 
-
-
 #################
 #   Postbacks   #
 #################
