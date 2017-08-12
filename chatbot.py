@@ -73,7 +73,7 @@ def actualListPages(sender, clientToken):
                 name = page["name"]
                 token = page["access_token"]
                 url = facebook.pageUrl(pageID)
-                imageURL = facebook.getPageProfilePictureUrl(pageID)
+                imageURL = facebook.getPageProfilePictureUrl(pageID, clientToken)
                 element = Element(name, "", url, imageURL)
                 element.addButton("Manage", managePage(pageID=pageID, name=name, token=token))
                 pagesMessage.addElement(element)
