@@ -2,6 +2,7 @@ import os
 import json
 import requests
 from util import *
+import chatbot
 
 PROFILE_URL = "https://graph.facebook.com/v2.9/me/messenger_profile"
 PARAMS = {"access_token": os.environ["PAGE_ACCESS_TOKEN"]}
@@ -10,7 +11,7 @@ SUPPORTED_LANGUAGES = ["en_US", "nl_BE"]
 
 
 def post(data):
-    jsonData = json.dumps(data, cls=CustomEncoder)
+    jsonData = json.dumps(data)
     r = requests.post(PROFILE_URL, params=PARAMS, headers=HEADERS, data=jsonData)
     if r.status_code != 200:
         log(r.status_code)
@@ -36,7 +37,7 @@ def getStartedButtonData(payload=None):
         }
     data = {
         "get_started": {
-            "payload": json.dumps(payload, cls=CustomEncoder)
+            "payload": json.dumps(chatbot.sendWelcome.payload)
         }
     }
     return data
@@ -46,7 +47,7 @@ def getWelcomeData():
     data = {"greeting": [
         {
             "locale": "default",
-            "text": gettext("Let's get you hooked up!")
+            "text": "Welcome!"
         }
         ]
     }
@@ -66,10 +67,7 @@ def getMenuData():
                     {
                         "title": "List pages",
                         "type": "postback",
-                        "payload": json.dumps({
-                            "type": "action",
-                            "action": "listPages",
-                        })
+                        "payload": json.dumps(chatbot.listPages.payload)
                     }
                 ]
             },

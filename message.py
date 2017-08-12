@@ -131,6 +131,7 @@ class Element:
 # decorator
 class postback:
     registered = dict()
+
     def __init__(self, func):
         self.func = func
         action = func.__name__
@@ -153,7 +154,6 @@ class Button:
             self.payload = data.payload
         else:
             raise RuntimeError("Button payload has unknown type: " + str(type(postback)))
-
 
     def getData(self):
         return {

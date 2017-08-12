@@ -28,24 +28,23 @@ def receivedMessage(sender, recipient, message):
             report.send(ADMIN_SENDER_ID)
         return
 
-    message = ButtonMessage("Pick one:", Button("List Pages", listPages))
-    message.send(sender)
+    sendLogin(sender)
 
 
 
-def sendLogin(person):
+def sendLogin(sender):
     loginMessage = ButtonMessage("I need access to your pages.")
     # redirect = urljoin(URL, "login/" + str(person.fbID))
     redirect = url_for("login_redirect", _external=True)    # TODO might need to set SERVER_NAME var
+    scopes = ",".join(["manage_pages", "publish_pages"])
     loginMessage.buttons.append(URLButton("Grant access",
-                                          "https://www.facebook.com/v2.9/dialog/oauth?redirect_uri={}&client_id={}".format(redirect, APP_ID)))
-    loginMessage.send(person.fbID)
+                                          "https://www.facebook.com/v2.9/dialog/oauth?redirect_uri={}&client_id={}&scope={}".format(redirect, APP_ID, scopes)))
+    loginMessage.send(sender)
 
 
 #################
 #   Postbacks   #
 #################
-
 
 def receivedPostback(sender, recipient, payload):
     log("Received postback with payload \"{}\" from {}".format(payload, sender))
@@ -70,8 +69,9 @@ def receivedPostback(sender, recipient, payload):
 
 @postback
 def sendWelcome(sender):
-    message = TextMessage("Hello! I'm glad you decided to use this app. Please answer some questions.")
+    message = TextMessage("Hello! I'm glad you decided to use this app.")
     message.send(sender)
+    sendLogin(sender)
 
 
 @postback
