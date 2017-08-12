@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-from flask_babel import LazyString
 
 # If in debug mode.
 DEBUG = os.getenv("DEBUG", False)
@@ -16,8 +15,8 @@ def log(message, debug=False):
     sys.stdout.flush()
 
 
-class CustomEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, LazyString):
-            return str(obj)
-        return json.JSONEncoder.default(self, obj)
+# class CustomEncoder(json.JSONEncoder):
+#     def default(self, obj):
+#         if isinstance(obj, LazyString):
+#             return str(obj)
+#         return json.JSONEncoder.default(self, obj)

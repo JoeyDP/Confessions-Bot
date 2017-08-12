@@ -2,32 +2,12 @@ import os
 import traceback
 
 from util import *
-from database import Person
 from message import *
 import chatbot
 
-from flask import Flask, request, g
-from flask_babel import Babel, refresh
+from flask import Flask, request, g, render_template
 
 app = Flask(__name__)
-babel = Babel(app)
-
-AVAILABLE_TRANSLATIONS = ['en', 'nl']
-g_locale = 'en'
-
-
-def updateLocale(locale):
-    global g_locale
-    if locale and len(str(locale)) >= 2:
-        g_locale = locale[:2]
-        refresh()
-
-
-@babel.localeselector
-def get_locale():
-    if g_locale in AVAILABLE_TRANSLATIONS:
-        return g_locale
-    return 'en'
 
 
 @app.route('/', methods=['GET'])
@@ -85,13 +65,12 @@ def login(sender):
             chatbot.loggedIn(sender)
 
     # close tab
-    return "<html><body><script>window.close()</script></body></html>", 200
+    return render_template('login_redirect_landing.html')
+   #  return "<html><body><script>window.close()</script></body></html>", 200
 
 
 def receivedRequest(request):
-    # log("new request", debug=True)
     data = request.get_json()
-    # log(data, debug=True)
 
     if data["object"] == "page":
 

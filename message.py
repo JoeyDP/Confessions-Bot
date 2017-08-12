@@ -3,8 +3,6 @@ import json
 
 from util import *
 
-from flask_babel import gettext, lazy_gettext, _, LazyString
-
 MESSAGE_URL = "https://graph.facebook.com/v2.9/me/messages"
 PARAMS = {"access_token": os.environ["PAGE_ACCESS_TOKEN"]}
 HEADERS = {"Content-Type": "application/json"}
@@ -25,7 +23,7 @@ class Message:
 
         data = self.getData()
         data["recipient"]["id"] = recipient
-        jsonData = json.dumps(data, cls=CustomEncoder)
+        jsonData = json.dumps(data)
         r = requests.post(MESSAGE_URL, params=PARAMS, headers=HEADERS, data=jsonData)
         if r.status_code != 200:
             log(r.status_code)
@@ -150,7 +148,7 @@ class AttributeMessage(ButtonMessage):
 
 class Option:
     def __init__(self, text, value=None):
-        self.text = lazy_gettext(text)
+        self.text = text
         self.value = value
         if not self.value:
             self.value = text
@@ -167,7 +165,7 @@ class Button:
         return {
             "type": "postback",
             "title": self.text,
-            "payload": json.dumps(self.payload, cls=CustomEncoder)
+            "payload": json.dumps(self.payload)
         }
 
 
@@ -214,7 +212,7 @@ class AttributeElement(Element):
 class ChatMessage(ButtonMessage):
     def __init__(self, sender, message):
         super().__init__("{}: {}".format(sender.fullName, message))
-        self.addButton(gettext("Respond"), {"type": "action",
+        self.addButton("Respond", {"type": "action",
                                                                           "action": "startChat",
                                                                           "contact": sender.fbID,
                                                                           "info": False,
