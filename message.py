@@ -46,7 +46,7 @@ class TextMessage(Message):
 class ButtonMessage(Message):
     def __init__(self, text, *buttons):
         super().__init__()
-        self.text = text
+        self.text = list(text)
 
         if len(buttons) > 3:
             raise RuntimeError("ButtonMessage can only have 3 options.")
