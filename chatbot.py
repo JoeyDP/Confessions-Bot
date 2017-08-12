@@ -71,7 +71,7 @@ def actualListPages(sender, clientToken):
                 page = pages[i]
                 url = facebook.pageUrl(page.id)
                 element = Element(page.name, "", url)
-                element.addButton(Button("Manage", managePage(page.id)))
+                element.addButton(Button("Manage", managePage(pageID=page.id, name=page.name, token=page.access_token)))
                 pagesMessage.addElement(element)
             pagesMessage.send(sender)
 
@@ -118,7 +118,7 @@ def listPages(sender):
 
 
 @postback
-def managePage(sender, pageID=None):
+def managePage(sender, pageID=None, name=None, token=None):
     message = TextMessage("You want me to manage page: " + str(pageID))
     message.send(sender)
 

@@ -40,7 +40,7 @@ def listManagedPages(clientToken):
     # TODO: paging
     debug("Fetching pages")
     data = queryFacebook("me/accounts", clientToken, ["access_token", "name", "id"])
-    debug(str(data))
+    debug("pages data:" + str(data))
     return data
 
 
