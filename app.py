@@ -57,8 +57,8 @@ def webhook():
     return "ok", 200
 
 
-@app.route('/login/<sender>', alias="login_redirect")
-def login(sender):
+@app.route('/login/<sender>')
+def login_redirect(sender):
     """ endpoint for redirect after login. """
     @after_this_request
     def afterLogin():
