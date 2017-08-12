@@ -13,6 +13,7 @@ ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
 
 
+
 def receivedMessage(sender, recipient, message):
     log("Received message \"{}\" from {}".format(message, sender))
     if sender == ADMIN_SENDER_ID:
@@ -28,11 +29,9 @@ def receivedMessage(sender, recipient, message):
         return
 
     sendWelcome(sender)
-
-
-def sendWelcome(sender):
-    message = TextMessage("Hello! I'm glad you decided to use this app. Please answer some questions.")
+    message = ButtonMessage("Pick one:", Button("List Pages", listPages))
     message.send(sender)
+
 
 
 def sendLogin(person):
@@ -44,17 +43,64 @@ def sendLogin(person):
     loginMessage.send(person.fbID)
 
 
-def loggedIn(sender):
-    pass
+
+
+#################
+#   Postbacks   #
+#################
+
+# decorator
+class postback:
+    registered = dict()
+    def __init__(self, func):
+        self.func = func
+        self.type = "action"
+        self.action = id(func)
+        postback.registered[self.action] = self
+
+    def __call__(self, *args, **kwargs):
+        self.func(*args, **kwargs)
 
 
 def receivedPostback(sender, recipient, payload):
     log("Received postback with payload \"{}\" from {}".format(payload, sender))
 
     if DISABLED:
-        response = TextMessage(gettext("I am temporarily offline. Follow the page for updates!"))
+        response = TextMessage("I am temporarily offline. Follow the page for updates!")
         response.send(sender)
         return
+
+    type = payload.get("type")
+    if not type:
+        raise RuntimeError("No 'type' included in postback.")
+
+    if type == "action":
+        action = payload["action"]
+        pb = postback.registered.get(action)
+        if not pb:
+            raise RuntimeError("No postback for action '{}'.".format(action))
+        pb(sender)
+
+
+@postback
+def sendWelcome(sender):
+    message = TextMessage("Hello! I'm glad you decided to use this app. Please answer some questions.")
+    message.send(sender)
+
+
+@postback
+def listPages(sender):
+    message = TextMessage("I will now list your pages.")
+    message.send(sender)
+
+
+def loggedIn(sender):
+    pass
+
+
+#################
+#   Management  #
+#################
 
 
 def exceptionOccured(e):

@@ -44,10 +44,13 @@ class TextMessage(Message):
 
 
 class ButtonMessage(Message):
-    def __init__(self, text):
+    def __init__(self, text, *buttons):
         super().__init__()
         self.text = text
-        self.buttons = list()
+
+        if len(buttons) > 3:
+            raise RuntimeError("ButtonMessage can only have 3 options.")
+        self.buttons = buttons
 
     def getData(self):
         data = super().getData()
@@ -103,16 +106,6 @@ class Element:
         self.image = image
         self.buttons = list()
 
-        # "image_url":"https://petersfancybrownhats.com/company_image.png",
-        # "subtitle":"We\'ve got the right hat for everyone.",
-        # "default_action": {
-        #                       "type": "web_url",
-        #                       "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
-        #                       "messenger_extensions": true,
-        #                       "webview_height_ratio": "tall",
-        #                       "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
-        #                   },
-
     def getData(self):
         data = {
             "title": self.title,
@@ -135,31 +128,12 @@ class Element:
         self.buttons.append(Button(text, payload))
 
 
-class AttributeMessage(ButtonMessage):
-    def __init__(self, attribute, text, *options, sendNext=True):
-        super().__init__(text)
-        if len(options) > 3:
-            raise RuntimeError("ButtonMessage can only have 3 options.")
-        for option in options:
-            if isinstance(option, str):
-                option = Option(option)
-            self.buttons.append(AttributeButton(attribute, option, sendNext=sendNext))
-
-
-class Option:
-    def __init__(self, text, value=None):
-        self.text = text
-        self.value = value
-        if not self.value:
-            self.value = text
-
-
 class Button:
     def __init__(self, text, payload):
         self.text = text
         self.payload = payload
         if not self.payload.get("type"):
-            self.payload["type"] = "action"
+            raise RuntimeError("Button payload should include 'type' field.")
 
     def getData(self):
         return {
@@ -180,40 +154,3 @@ class URLButton:
             "title": self.title,
             "url": self.url,
         }
-
-
-class AttributeButton(Button):
-    def __init__(self, attribute, option, sendNext=True):
-        super().__init__(
-            option.text,
-            {
-                "type": "attribute",
-                "attribute": attribute,
-                "value": option.value,
-                "sendNext": sendNext,
-            }
-        )
-
-
-class AttributeElement(Element):
-    def __init__(self, attribute, name, question, *options, sendNext=True):
-        super().__init__(
-            name,
-            question
-        )
-        if len(options) > 3:
-            raise RuntimeError("ButtonMessage can only have 3 options.")
-        for option in options:
-            if isinstance(option, str):
-                option = Option(option)
-            self.buttons.append(AttributeButton(attribute, option, sendNext=sendNext))
-
-
-class ChatMessage(ButtonMessage):
-    def __init__(self, sender, message):
-        super().__init__("{}: {}".format(sender.fullName, message))
-        self.addButton("Respond", {"type": "action",
-                                                                          "action": "startChat",
-                                                                          "contact": sender.fbID,
-                                                                          "info": False,
-                                                                          })
