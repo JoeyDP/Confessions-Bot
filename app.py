@@ -9,13 +9,14 @@ from flask import Flask, request, g, render_template
 
 app = Flask(__name__)
 
+VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
 @app.route('/', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
     # the 'hub.challenge' value it receives in the query arguments
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
-        if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
+        if not request.args.get("hub.verify_token") == VERIFY_TOKEN:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
@@ -23,7 +24,7 @@ def verify():
 
 
 def webpage():
-    return "FWB finder!", 200
+    return "Confessions!", 200
 
 
 def after_this_request(func):
@@ -56,7 +57,7 @@ def webhook():
     return "ok", 200
 
 
-@app.route('/login/<sender>')
+@app.route('/login/<sender>', alias="login_redirect")
 def login(sender):
     """ endpoint for redirect after login. """
     @after_this_request
@@ -64,9 +65,9 @@ def login(sender):
         if sender:
             chatbot.loggedIn(sender)
 
+    # TODO: change to a redirect to the page form
     # close tab
     return render_template('login_redirect_landing.html')
-   #  return "<html><body><script>window.close()</script></body></html>", 200
 
 
 def receivedRequest(request):

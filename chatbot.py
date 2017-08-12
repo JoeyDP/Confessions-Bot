@@ -4,9 +4,11 @@ from message import *
 from database import *
 import facebook
 import profile
+from flask import url_for
 
 
 URL = os.environ["URL"]
+APP_ID = os.environ["APP_ID"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
 
@@ -18,24 +20,27 @@ def receivedMessage(sender, recipient, message):
             return
 
     if DISABLED:
-        response = TextMessage(gettext("I am temporarily offline. Follow the page for updates!"))
+        response = TextMessage("I am temporarily offline. Follow the page for updates!")
         response.send(sender)
         if len(message) > 5 and ADMIN_SENDER_ID:
             report = TextMessage("{}:\n\"{}\"".format(sender, message))
             report.send(ADMIN_SENDER_ID)
         return
 
+    sendWelcome(sender)
 
-def sendWelcome(person):
-    message = TextMessage(lazy_gettext("Hello {}! I'm glad you decided to use this app. Please answer some questions.").format(person.firstName))
-    message.send(person.fbID)
+
+def sendWelcome(sender):
+    message = TextMessage("Hello! I'm glad you decided to use this app. Please answer some questions.")
+    message.send(sender)
 
 
 def sendLogin(person):
-    loginMessage = ButtonMessage(lazy_gettext("I need access to your public profile. This will be sent to people you match with."))
-    redirect = urljoin(URL, "login/" + str(person.fbID))
-    loginMessage.buttons.append(URLButton(lazy_gettext("Sign me up"),
-                                          "https://www.facebook.com/v2.9/dialog/oauth?redirect_uri={}&client_id={}".format(redirect, os.environ["APP_ID"])))
+    loginMessage = ButtonMessage("I need access to your pages.")
+    # redirect = urljoin(URL, "login/" + str(person.fbID))
+    redirect = url_for("login_redirect", _external=True)    # TODO might need to set SERVER_NAME var
+    loginMessage.buttons.append(URLButton("Grant access",
+                                          "https://www.facebook.com/v2.9/dialog/oauth?redirect_uri={}&client_id={}".format(redirect, APP_ID)))
     loginMessage.send(person.fbID)
 
 
