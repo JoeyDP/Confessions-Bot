@@ -15,6 +15,10 @@ def log(message, debug=False):
     sys.stdout.flush()
 
 
+def debug(message):
+    log(message, debug=True)
+
+
 # class CustomEncoder(json.JSONEncoder):
 #     def default(self, obj):
 #         if isinstance(obj, LazyString):

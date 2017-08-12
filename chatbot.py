@@ -43,7 +43,7 @@ def loggedIn(sender, code):
 
     clientToken = facebook.getClientTokenFromCode(sender, code)
     if clientToken:
-        log("Client Token: " + str(clientToken))
+        debug("Client Token: " + str(clientToken))
         status = actualListPages(sender, clientToken)
         if status:
             return
