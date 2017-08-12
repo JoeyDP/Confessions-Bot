@@ -35,10 +35,15 @@ def receivedMessage(sender, recipient, message):
 def sendLogin(sender):
     redirect = url_for("login_redirect", sender=sender, _external=True)    # TODO might need to set SERVER_NAME var
     scopes = ",".join(["manage_pages", "publish_pages"])
-    url = "https://www.facebook.com/v2.9/dialog/oauth?redirect_uri={}&client_id={}&scope={}".format(redirect, APP_ID, scopes)
+    url = "https://www.facebook.com/v2.9/dialog/oauth?display=popup&redirect_uri={}&client_id={}&scope={}".format(redirect, APP_ID, scopes)
     button = URLButton("Grant access", url)
     loginMessage = ButtonMessage("I need access to your pages.", button)
     loginMessage.send(sender)
+
+
+def loggedIn(sender):
+    log("Login successful!")
+    log(sender)
 
 
 #################
@@ -79,8 +84,6 @@ def listPages(sender):
     message.send(sender)
 
 
-def loggedIn(sender):
-    pass
 
 
 #################
