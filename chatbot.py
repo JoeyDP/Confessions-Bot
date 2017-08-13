@@ -30,7 +30,7 @@ def receivedMessage(sender, recipient, message):
 
 
 def sendLogin(sender):
-    scopes = ",".join(["manage_pages", "publish_pages"])
+    scopes = ",".join(["manage_pages", "publish_pages", "pages_show_list"])
     url = facebook.loginUrl(sender, scopes)
     button = URLButton("Grant access", url)
     loginMessage = ButtonMessage("I need access to your pages.", button)
