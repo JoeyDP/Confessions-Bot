@@ -104,6 +104,7 @@ class FBPage:
         if data:
             posts = list()
             for postData in data.get("data"):
+                debug(postData)
                 if "message" in postData:
                     post = FBPost(postData["id"], postData["message"])
                     posts.append(post)
