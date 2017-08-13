@@ -13,13 +13,14 @@ from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 Bootstrap(app)
-CSRFProtect(app)
+csrf = CSRFProtect(app)
 
 
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 app.secret_key = VERIFY_TOKEN
 
 @app.route('/', methods=['GET'])
+@csrf.exempt
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
     # the 'hub.challenge' value it receives in the query arguments
@@ -90,6 +91,7 @@ def teardown_request(exception=None):
 
 
 @app.route('/', methods=['POST'])
+@csrf.exempt
 def webhook():
     """ endpoint for processing incoming messaging events. """
     @after_this_request
