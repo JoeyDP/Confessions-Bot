@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, validators
+from wtforms import StringField, validators, TextAreaField
 
 class ConfessionForm(FlaskForm):
-    confession = StringField('Confession', [validators.Length(min=10)])
+    confession = TextAreaField('Confession', [validators.Length(min=10)], render_kw={})
     # accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
