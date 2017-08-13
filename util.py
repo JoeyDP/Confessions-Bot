@@ -6,7 +6,7 @@ import json
 DEBUG = os.getenv("DEBUG", False)
 
 
-def log(message, debug=False):
+def log(message="", debug=False):
     """ Simple wrapper for logging to stdout on heroku. """
     if debug and not DEBUG:     # Do not print debug if not requested
         return
@@ -15,7 +15,7 @@ def log(message, debug=False):
     sys.stdout.flush()
 
 
-def debug(message):
+def debug(message=""):
     log(message, debug=True)
 
 
