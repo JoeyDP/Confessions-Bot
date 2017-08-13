@@ -60,7 +60,7 @@ def confession_form(pageID):
         if not confession.page.hasPendingConfession():
             chatbot.sendConfession(confession)
 
-        return redirect(url_for('confess_success'))
+        return redirect(url_for('confession_success'))
     return render_template('confession_form.html', form=form)
 
 
