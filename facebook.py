@@ -1,3 +1,4 @@
+import re
 import requests
 import json
 from urllib.parse import urljoin
@@ -12,9 +13,14 @@ CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 APP_ID = os.environ["APP_ID"]
 
 
-def makeRequest(endpoint, **parameters):
+def makeRequest(endpoint, method="GET", **parameters):
     url = urljoin(BASE_URL, endpoint)
-    r = requests.get(url, params=parameters)
+    if method == "GET":
+        r = requests.get(url, params=parameters)
+    elif method == "POST":
+        r = requests.post(url, data=parameters)
+    else:
+        raise RuntimeError("Unknown request method: " + str(method))
     if r.status_code == 200:
         debug("Url: " + str(url))
         debug("Response: " + str(r.text))
@@ -27,6 +33,10 @@ def makeRequest(endpoint, **parameters):
 
 def queryFacebook(endpoint, accessToken, fields, **parameters):
     return makeRequest(endpoint, access_token=accessToken, fields=",".join(fields), **parameters)
+
+
+def postFacebook(endpoint, accessToken, **parameters):
+    return makeRequest(endpoint, method="POST", access_token=accessToken, **parameters)
 
 
 def getClientTokenFromCode(sender, code):
@@ -61,6 +71,52 @@ def loginUrl(sender, scopes):
     url += "?display=popup&redirect_uri={}&client_id={}&scope={}".format(loginRedirectURI(sender), APP_ID, scopes)
     return url
 
-
 def loginRedirectURI(sender):
     return url_for("login_redirect", sender=sender, _external=True)
+
+
+class FBPost:
+    def __init__(self, id, text):
+        self.id = id
+        self.text = text
+
+class FBPage:
+    def __init__(self, page):
+        self._page = page
+        self.id = page.fb_id
+        self.token = page.token
+
+    def query(self, endpoint="", fields=[], **parameters):
+        return queryFacebook(urljoin(str(self.id), endpoint), self.token, fields, **parameters)
+
+    def post(self, endpoint="", **parameters):
+        return postFacebook(urljoin(str(self.id), endpoint), self.token, **parameters)
+
+    def getName(self):
+        data = self.query()
+        if data:
+            return data.get("name")
+
+    def getRecentPosts(self):
+        data = self.query("feed")
+        if data:
+            posts = list()
+            for postData in data.get("data"):
+                if "message" in postData:
+                    post = FBPost(postData["id"], postData["message"])
+                    posts.append(post)
+            posts.reverse()
+            return posts
+
+    def getLastConfessionIndex(self):
+        posts = self.getRecentPosts()
+        if posts:
+            for post in posts:
+                result = re.search(r'^\#(\d+)', post.text)
+                if result:
+                    index = result.group(1)
+                    return index
+
+    def postConfession(self, index, text):
+        message = "#{} {}".format(index, text)
+        self.post("feed", message=message)

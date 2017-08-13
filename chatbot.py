@@ -123,8 +123,20 @@ def listPages(sender):
 
 @postback
 def managePage(sender, pageID=None, name=None, token=None):
-    message = TextMessage("You want me to manage page: " + str(pageID))
-    message.send(sender)
+    page = Page.findById(pageID)
+    if page:
+        message = TextMessage("I already manage the page " + str(name))
+        message.send(sender)
+    else:
+        page = Page()
+        page.fb_id = pageID
+        page.name = name
+        page.token = token
+        page.add()
+        message = TextMessage("I am nog managing the page " + str(name))
+        message.send(sender)
+        message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID)))
+        message.send(sender)
 
 
 #################
