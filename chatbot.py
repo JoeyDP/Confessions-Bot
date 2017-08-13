@@ -82,6 +82,24 @@ def actualListPages(sender, clientToken):
     return True
 
 
+def sendConfession(confession):
+    admin = confession.page.admin_messenger_id
+    message = ButtonMessage("[{}]: {}".format(confession.page.name, confession.text))
+    message.addButton("Post", acceptConfession(confession.id))
+    message.addButton("Discard", rejectConfession(confession.id))
+    status = message.send(admin)
+    if status:
+        confession.setPending()
+        confession.save()
+    return status
+
+
+def sendFreshConfession(page):
+    fresh = page.getFirstFreshConfession()
+    if fresh:
+        sendConfession(fresh)
+
+
 #################
 #   Postbacks   #
 #################
@@ -137,6 +155,32 @@ def managePage(sender, pageID=None, name=None, token=None):
         message.send(sender)
         message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID, _external=True)))
         message.send(sender)
+
+
+@postback
+def acceptConfession(sender, confessionID):
+    confession = Confession.findById(confessionID)
+    fbPage = facebook.FBPage(confession.page)
+    index = fbPage.getLastConfessionIndex()
+    postID = fbPage.postConfession(index + 1, confession.text)
+    if postID:
+        message = TextMessage("Posted confession: {}".format(facebook.postUrl(postID)))
+        message.send(sender)
+        confession.setPosted(postID)
+    else:
+        message = TextMessage("Failed to post confession.")
+        message.send(sender)
+        confession.status = "fresh"     # set status to fresh again, because posting failed
+    confession.save()
+    sendFreshConfession(confession.page)
+
+
+@postback
+def rejectConfession(sender, confessionID):
+    confession = Confession.findById(confessionID)
+    confession.setRejected()
+    confession.save()
+    sendFreshConfession(confession.page)
 
 
 #################

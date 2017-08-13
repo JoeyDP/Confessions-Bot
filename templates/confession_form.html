@@ -1,7 +1,13 @@
-<html>
-<body>
+{% extends "bootstrap/base.html" %}
+{% block title %}This is an example page{% endblock %}
 
-<h1>This is the form for confessions.</h1>
+{% block navbar %}
 
-</body>
-</html>
+{% endblock %}
+
+{% block content %}
+	<h1>This is the form for confessions.</h1>
+
+	{{ wtf.quick_form(form) }}
+
+{% endblock %}

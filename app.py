@@ -4,10 +4,14 @@ import traceback
 from util import *
 from message import *
 import chatbot
+from form import ConfessionForm
+from database import Confession
 
-from flask import Flask, request, g, render_template
+from flask import Flask, request, g, render_template, redirect, url_for
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
+Bootstrap(app)
 
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 
@@ -42,7 +46,22 @@ def login_redirect(sender):
 
 @app.route('/confess/<pageID>')
 def confession_form(pageID):
-    return render_template('confession_form.html')
+    form = ConfessionForm(request.form)
+    if request.method == 'POST' and form.validate():
+        text = form.confession.data
+        confession = Confession()
+        confession.text = text
+        confession.page_id = pageID
+        confession.add()
+        if not confession.page.hasPendingConfession():
+            chatbot.sendConfession(confession)
+
+        return redirect(url_for('confess_success'))
+    return render_template('confession_form.html', form=form)
+
+
+@app.route('/confess_success')
+def confession_success():
 
 
 def after_this_request(func):

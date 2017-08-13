@@ -62,9 +62,11 @@ def getPageProfilePictureUrl(pageID, clientToken):
         return response["data"].get("url")
 
 
-def pageUrl(pageID):
+def objectUrl(pageID):
     return urljoin(FB_URL, str(pageID))
 
+pageUrl = objectUrl
+postUrl = objectUrl
 
 def loginUrl(sender, scopes):
     url = "https://www.facebook.com/v2.9/dialog/oauth"
@@ -119,4 +121,8 @@ class FBPage:
 
     def postConfession(self, index, text):
         message = "#{} {}".format(index, text)
-        self.post("feed", message=message)
+        response = self.post("feed", message=message)
+        if response:
+            data = response.get("data")
+            if data:
+                return data.get("id")

@@ -53,7 +53,7 @@ class Page(SQLBase, Base):
     def getFirstFreshConfession(self):
         return Confession.getFirstFresh(self.fb_id)
 
-    def has_pending_confession(self):
+    def hasPendingConfession(self):
         query = Confession.session.query(func.count(Confession))
         query.filter_by(page_id=self.page_id)
         amount = query.scalar()
