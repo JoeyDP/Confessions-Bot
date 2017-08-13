@@ -104,7 +104,6 @@ class FBPage:
         if data:
             posts = list()
             for postData in data.get("data"):
-                debug(postData)
                 if "message" in postData:
                     post = FBPost(postData["id"], postData["message"])
                     posts.append(post)
@@ -123,6 +122,7 @@ class FBPage:
     def postConfession(self, text, index=None):
         if index is None:
             lastIndex = self.getLastConfessionIndex()
+            debug("Last index: " + str(lastIndex))
             if lastIndex:
                 index = lastIndex + 1
             else:

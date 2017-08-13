@@ -195,6 +195,13 @@ def rejectConfession(sender, confessionID=None):
         sendFreshConfession(confession.page)
 
 
+@postback
+def sendPending(sender):
+    pass
+    # TODO send pending confession of every page of admin?
+
+
+
 #################
 #   Management  #
 #################
