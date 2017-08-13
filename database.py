@@ -1,7 +1,7 @@
 import os
 import datetime
 
-from sqlalchemy import create_engine, or_
+from sqlalchemy import create_engine, or_, and_
 from sqlalchemy.sql import func
 from sqlalchemy import Column, ForeignKey, Integer, Boolean, Enum, String, DateTime, select, Text
 from sqlalchemy.ext.declarative import declarative_base
@@ -54,9 +54,10 @@ class Page(SQLBase, Base):
         return Confession.getFirstFresh(self.fb_id)
 
     def hasPendingConfession(self):
-        query = Confession.session.query(func.count(Confession.id))
-        query.filter_by(page_id=self.fb_id)
-        query.filter_by(status="pending")
+        # query = Confession.session.query(func.count(Confession.id))
+        # query.filter_by(page_id=self.fb_id)
+        # query.filter_by(status="pending")
+        query = select([func.count(Confession.id)], and_(Confession.page_id==self.fb_id, Confession.status=="pending"))
         amount = query.scalar()
         debug("Amount confessions pending: " + str(amount))
         return amount > 0
