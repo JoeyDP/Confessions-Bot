@@ -85,8 +85,8 @@ def actualListPages(sender, clientToken):
 def sendConfession(confession):
     admin = confession.page.admin_messenger_id
     message = ButtonMessage("[{}]: {}".format(confession.page.name, confession.text))
-    message.addButton("Post", acceptConfession(confession.id))
-    message.addButton("Discard", rejectConfession(confession.id))
+    message.addButton("Post", acceptConfession(confessionID=confession.id))
+    message.addButton("Discard", rejectConfession(confessionID=confession.id))
     status = message.send(admin)
     if status:
         confession.setPending()
@@ -158,7 +158,7 @@ def managePage(sender, pageID=None, name=None, token=None):
 
 
 @postback
-def acceptConfession(sender, confessionID):
+def acceptConfession(sender, confessionID=None):
     confession = Confession.findById(confessionID)
     fbPage = facebook.FBPage(confession.page)
     index = fbPage.getLastConfessionIndex()
@@ -176,7 +176,7 @@ def acceptConfession(sender, confessionID):
 
 
 @postback
-def rejectConfession(sender, confessionID):
+def rejectConfession(sender, confessionID=None):
     confession = Confession.findById(confessionID)
     confession.setRejected()
     confession.save()
