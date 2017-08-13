@@ -54,12 +54,8 @@ class Page(SQLBase, Base):
         return Confession.getFirstFresh(self.fb_id)
 
     def hasPendingConfession(self):
-        # query = Confession.session.query(func.count(Confession.id))
-        # query.filter_by(page_id=self.fb_id)
-        # query.filter_by(status="pending")
         query = select([func.count(Confession.id)], and_(Confession.page_id==self.fb_id, Confession.status=="pending"))
         amount = query.scalar()
-        debug("Amount confessions pending: " + str(amount))
         return amount > 0
 
     def addConfession(self, text):
@@ -99,7 +95,12 @@ class Confession(SQLBase, Base):
         query.filter_by(page_id=page_id, status="fresh")
         query.order_by(Confession.timestamp.asc())
         confession = query.first()
-        debug("All fresh: " + str(query.all()))
+        fresh = query.all()
+        debug("All fresh:")
+        for confession in fresh:
+            debug("status: " + str(confession.status))
+            debug("timestamp: " + str(confession.timestamp))
+            debug()
         return confession
 
     def setPosted(self, fb_id):
