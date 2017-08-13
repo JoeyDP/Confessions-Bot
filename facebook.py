@@ -107,7 +107,6 @@ class FBPage:
                 if "message" in postData:
                     post = FBPost(postData["id"], postData["message"])
                     posts.append(post)
-            posts.reverse()
             return posts
 
     def getLastConfessionIndex(self):
