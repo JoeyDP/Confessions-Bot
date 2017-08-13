@@ -27,6 +27,24 @@ def webpage():
     return "Confessions!", 200
 
 
+@app.route('/login/<sender>')
+def login_redirect(sender):
+    """ endpoint for redirect after login. """
+    @after_this_request
+    def afterLogin():
+        code = request.args.get("code")
+        if sender and code:
+            chatbot.loggedIn(sender, code)
+
+    # TODO: change to a redirect to the page form
+    return render_template('login_redirect_landing.html')
+
+
+@app.route('/confess/<pageID>')
+def confession_form(pageID):
+    return render_template('confession_form.html')
+
+
 def after_this_request(func):
     if not hasattr(g, 'call_after_request'):
         g.call_after_request = []
@@ -55,20 +73,6 @@ def webhook():
         receivedRequest(request)
 
     return "ok", 200
-
-
-@app.route('/login/<sender>')
-def login_redirect(sender):
-    """ endpoint for redirect after login. """
-    @after_this_request
-    def afterLogin():
-        code = request.args.get("code")
-        if sender and code:
-            chatbot.loggedIn(sender, code)
-
-    # TODO: change to a redirect to the page form
-    # close tab
-    return render_template('login_redirect_landing.html')
 
 
 def receivedRequest(request):
