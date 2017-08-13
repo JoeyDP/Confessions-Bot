@@ -66,6 +66,7 @@ class Page(SQLBase, Base):
         c.text = text
         return c
 
+
 """ 
 Enum for status of confession. Values are:
  - fresh:       Received from form, but not handled yet. (default) 
@@ -73,9 +74,6 @@ Enum for status of confession. Values are:
  - posted:      Posted on the Facebook page.
  - rejected:    Discarded by admin.
 """
-statusEnum = Enum("fresh", "pending", "posted", "rejected", name="confessionStatusEnum")
-
-
 class Confession(SQLBase, Base):
     __tablename__ = "confession"
 
@@ -83,7 +81,7 @@ class Confession(SQLBase, Base):
     timestamp = Column(DateTime, default=datetime.datetime.now)
     page_id = Column(Integer, ForeignKey('page.id'))
     page = relationship("Page", back_populates="confessions")
-    status = Column(statusEnum, default="fresh")
+    status = Column(Enum("fresh", "pending", "posted", "rejected", name="confessionStatusEnum"), default="fresh")
     text = Column(Text)
     time_updated = Column(DateTime, onupdate=datetime.datetime.now)
     fb_id = Column(String(128))
