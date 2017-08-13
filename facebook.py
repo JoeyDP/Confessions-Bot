@@ -123,6 +123,7 @@ class FBPage:
     def postConfession(self, index, text):
         message = "#{} {}".format(str(index), text)
         response = self.post("feed", message=message)
+        debug("post confession response: " + str(response))
         if response:
             data = response.get("data")
             if data:
