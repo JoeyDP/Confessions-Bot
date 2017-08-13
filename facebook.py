@@ -99,6 +99,18 @@ class FBPage:
         if data:
             return data.get("name")
 
+    def getProfilePictureUrl(self):
+        data = self.query("picture", redirect=False)
+        if data:
+            return data["data"].get("url")
+
+    def getCoverPictureUrl(self):
+        data = self.query(fields=["cover"],)
+        if data:
+            cover = data["data"].get("cover")
+            if cover:
+                return cover.get("source")
+
     def getRecentPosts(self):
         data = self.query("feed")
         if data:

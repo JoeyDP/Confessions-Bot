@@ -5,9 +5,10 @@ from util import *
 from message import *
 import chatbot
 from form import ConfessionForm
-from database import Confession
+from database import Confession, Page
+from facebook import FBPage
 
-from flask import Flask, request, g, render_template, redirect, url_for
+from flask import Flask, request, g, render_template, redirect, url_for, abort
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CSRFProtect
 
@@ -62,7 +63,14 @@ def confession_form(pageID):
             chatbot.sendFreshConfession(confession.page)
 
         return redirect(url_for('confession_success'))
-    return render_template('confession_form.html', form=form)
+    page = Page.findById(pageID)
+    if page:
+        fbPage = FBPage(page)
+        profilePic = fbPage.getProfilePictureUrl()
+        cover = fbPage.getCoverPictureUrl()
+        return render_template('confession_form.html', form=form, pageName=page.name, profilePic=profilePic, cover=cover)
+    else:
+        abort(404)
 
 
 @app.route('/confess_success')
