@@ -120,7 +120,14 @@ class FBPage:
                     index = result.group(1)
                     return int(index)
 
-    def postConfession(self, index, text):
+    def postConfession(self, text, index=None):
+        if index is None:
+            lastIndex = self.getLastConfessionIndex()
+            if lastIndex:
+                index = lastIndex + 1
+            else:
+                index = 1
+
         message = "#{} {}".format(str(index), text)
         response = self.post("feed", message=message)
         if response:

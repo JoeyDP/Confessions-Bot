@@ -168,10 +168,7 @@ def acceptConfession(sender, confessionID=None):
         return
 
     fbPage = facebook.FBPage(confession.page)
-    lastIndex = fbPage.getLastConfessionIndex()
-    if not lastIndex:
-        lastIndex = 0
-    postID = fbPage.postConfession(lastIndex + 1, confession.text)
+    postID = fbPage.postConfession(confession.text)
     if postID:
         message = TextMessage("Posted confession: {}".format(facebook.postUrl(postID)))
         message.send(sender)
