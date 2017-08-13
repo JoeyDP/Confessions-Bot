@@ -25,7 +25,6 @@ class Base:
     session = Session()
 
     def add(self):
-        app.updateLocale(self.locale)
         Base.session.add(self)
         Base.session.commit()
 
