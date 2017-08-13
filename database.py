@@ -73,7 +73,7 @@ Enum for status of confession. Values are:
  - posted:      Posted on the Facebook page.
  - rejected:    Discarded by admin.
 """
-statusEnum = Enum("fresh", "pending", "posted", "rejected")
+statusEnum = Enum("fresh", "pending", "posted", "rejected", name="confessionStatusEnum")
 
 
 class Confession(SQLBase, Base):
