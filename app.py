@@ -62,6 +62,7 @@ def confession_form(pageID):
 
 @app.route('/confess_success')
 def confession_success():
+    return render_template('confession_success.html')
 
 
 def after_this_request(func):
