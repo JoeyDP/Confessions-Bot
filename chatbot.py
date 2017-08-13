@@ -135,7 +135,7 @@ def managePage(sender, pageID=None, name=None, token=None):
         page.add()
         message = TextMessage("I am nog managing the page " + str(name))
         message.send(sender)
-        message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID)))
+        message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID, _external=True)))
         message.send(sender)
 
 
