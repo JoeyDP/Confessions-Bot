@@ -99,6 +99,7 @@ class Confession(SQLBase, Base):
         query.filter_by(page_id=page_id, status="fresh")
         query.order_by(Confession.timestamp.asc())
         confession = query.first()
+        debug("All fresh: " + str(query.all()))
         return confession
 
     def setPosted(self, fb_id):
