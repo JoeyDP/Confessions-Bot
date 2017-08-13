@@ -118,10 +118,10 @@ class FBPage:
                 result = re.search(r'^\#(\d+)\s', post.text)
                 if result:
                     index = result.group(1)
-                    return index
+                    return int(index)
 
     def postConfession(self, index, text):
-        message = "#{} {}".format(index, text)
+        message = "#{} {}".format(str(index), text)
         response = self.post("feed", message=message)
         if response:
             data = response.get("data")
