@@ -181,7 +181,8 @@ def acceptConfession(sender, confessionID=None):
         message.send(sender)
         confession.status = "fresh"     # set status to fresh again, because posting failed
     confession.save()
-    sendFreshConfession(confession.page)
+    if not confession.page.hasPendingConfession():
+        sendFreshConfession(confession.page)
 
 
 @postback
@@ -190,7 +191,8 @@ def rejectConfession(sender, confessionID=None):
     confession = Confession.findById(confessionID)
     confession.setRejected()
     confession.save()
-    sendFreshConfession(confession.page)
+    if not confession.page.hasPendingConfession():
+        sendFreshConfession(confession.page)
 
 
 #################
