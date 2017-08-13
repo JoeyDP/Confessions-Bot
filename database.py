@@ -55,8 +55,9 @@ class Page(SQLBase, Base):
 
     def hasPendingConfession(self):
         query = Confession.session.query(func.count(Confession.fb_id))
-        query.filter_by(page_id=self.fb_id)
+        query.filter_by(page_id=self.fb_id, status="pending")
         amount = query.scalar()
+        debug("Amount confessions pending: " + str(amount))
         return amount > 0
 
     def addConfession(self, text):
