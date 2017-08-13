@@ -150,6 +150,7 @@ def managePage(sender, pageID=None, name=None, token=None):
         page.fb_id = pageID
         page.name = name
         page.token = token
+        page.admin_messenger_id = sender
         page.add()
         message = TextMessage("I am nog managing the page " + str(name))
         message.send(sender)
