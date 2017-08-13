@@ -26,7 +26,7 @@ def receivedMessage(sender, recipient, message):
             report.send(ADMIN_SENDER_ID)
         return
 
-    sendLogin(sender)
+    # sendLogin(sender)
 
 
 def sendLogin(sender):
