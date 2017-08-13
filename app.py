@@ -9,11 +9,15 @@ from database import Confession
 
 from flask import Flask, request, g, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 Bootstrap(app)
+CSRFProtect(app)
+
 
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
+app.secret_key = VERIFY_TOKEN
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -44,10 +48,10 @@ def login_redirect(sender):
     return render_template('login_redirect_landing.html')
 
 
-@app.route('/confess/<pageID>')
+@app.route('/confess/<pageID>', methods=('GET', 'POST'))
 def confession_form(pageID):
     form = ConfessionForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if form.validate_on_submit():
         text = form.confession.data
         confession = Confession()
         confession.text = text
