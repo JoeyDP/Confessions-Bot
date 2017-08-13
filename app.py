@@ -58,7 +58,7 @@ def confession_form(pageID):
         confession.page_id = pageID
         confession.add()
         if not confession.page.hasPendingConfession():
-            chatbot.sendFreshConfession()
+            chatbot.sendFreshConfession(confession.page)
 
         return redirect(url_for('confession_success'))
     return render_template('confession_form.html', form=form)
