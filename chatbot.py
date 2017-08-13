@@ -160,7 +160,13 @@ def managePage(sender, pageID=None, name=None, token=None):
 
 @postback
 def acceptConfession(sender, confessionID=None):
+    debug("Accepted confession")
     confession = Confession.findById(confessionID)
+    if confession.status == "posted":
+        message = TextMessage("Confession was already posted: {}".format(facebook.postUrl(confession.fb_id)))
+        message.send(sender)
+        return
+
     fbPage = facebook.FBPage(confession.page)
     index = fbPage.getLastConfessionIndex()
     postID = fbPage.postConfession(index + 1, confession.text)
@@ -178,6 +184,7 @@ def acceptConfession(sender, confessionID=None):
 
 @postback
 def rejectConfession(sender, confessionID=None):
+    debug("Rejected confession")
     confession = Confession.findById(confessionID)
     confession.setRejected()
     confession.save()
