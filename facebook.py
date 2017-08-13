@@ -107,7 +107,7 @@ class FBPage:
     def getCoverPictureUrl(self):
         data = self.query(fields=["cover"],)
         if data:
-            cover = data["data"].get("cover")
+            cover = data.get("cover")
             if cover:
                 return cover.get("source")
 
