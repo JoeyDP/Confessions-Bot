@@ -88,11 +88,11 @@ class FBPage:
         self.id = page.fb_id
         self.token = page.token
 
-    def query(self, endpoint="", fields=[], **parameters):
-        return queryFacebook(urljoin(str(self.id), endpoint), self.token, fields, **parameters)
+    def query(self, endpoint="", fields=list(), **parameters):
+        return queryFacebook(str(self.id) + "/" + endpoint, self.token, fields, **parameters)
 
     def post(self, endpoint="", **parameters):
-        return postFacebook(urljoin(str(self.id), endpoint), self.token, **parameters)
+        return postFacebook(str(self.id) + "/" + endpoint, self.token, **parameters)
 
     def getName(self):
         data = self.query()
@@ -115,7 +115,7 @@ class FBPage:
         posts = self.getRecentPosts()
         if posts:
             for post in posts:
-                result = re.search(r'^\#(\d+)', post.text)
+                result = re.search(r'^\#(\d+)\s', post.text)
                 if result:
                     index = result.group(1)
                     return index
