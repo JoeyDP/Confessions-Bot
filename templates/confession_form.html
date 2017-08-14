@@ -1,5 +1,7 @@
 {% extends "bootstrap/base.html" %}
 
+{% import "bootstrap/wtf.html" as wtf %}
+
 {% block title %}{{ pageName }}{% endblock %}
 
 {% block styles %}
@@ -16,10 +18,13 @@
     <em style="color:#95a5a6"> the truth will set you free </em><br>
 	<img src="{{ cover }}"></img>
 
-    <form action="" method="post" class="form" role="form">
+    <form class="form form-horizontal" method="post" role="form">
+        <!--textarea id="TextArea" onchange="expand(this);" placeholder="Confession..."></textarea-->
+
         {{ form.hidden_tag() }}
-        <textarea id="TextArea" onchange="expand(this);" placeholder="Confession..."></textarea>
-        <br/>
+        {{ wtf.form_errors(form, hiddens="only") }}
+
+        {{ wtf.form_field(form.confession) }}
         <input id="submitButton" type="submit">
     </form>
 </div>
