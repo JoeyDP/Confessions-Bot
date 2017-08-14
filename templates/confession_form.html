@@ -12,16 +12,13 @@
 
 {% block content %}
 <div class="container">
-	<h1>This is the form for confessions.</h1>
-
     <h1>{{ pageName }}</h1>
-    <em style="color:#95a5a6"> the truth will set you free </em>
-
+    <em style="color:#95a5a6"> the truth will set you free </em><br>
 	<img src="{{ cover }}"></img>
 
     <form action="" method="post" class="form" role="form">
         {{ form.hidden_tag() }}
-        <textarea id="TextArea" onchange="expand();" placeholder="Confession..."></textarea>
+        <textarea id="TextArea" onchange="expand(this);" placeholder="Confession..."></textarea>
         <br/>
         <input id="submitButton" type="submit">
     </form>
@@ -29,8 +26,7 @@
 {% endblock %}
 {% block scripts %}
     <script>
-        function expand() {
-            var element = this;
+        function expand(element) {
             var scrollHeight = element.scrollHeight -60; // replace 60 by the sum of padding-top and padding-bottom
             element.style.height =  scrollHeight + "px";
         }

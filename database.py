@@ -77,7 +77,7 @@ class Confession(SQLBase, Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     timestamp = Column(DateTime, default=datetime.datetime.now)
-    page_id = Column(String(128), ForeignKey(Page.fb_id))
+    page_id = Column(String(128), ForeignKey(Page.fb_id, onupdate="CASCADE", ondelete="CASCADE"))
     page = relationship("Page", back_populates="confessions")
     status = Column(Enum("fresh", "pending", "posted", "rejected", name="confessionStatusEnum"), default="fresh")
     text = Column(Text)
