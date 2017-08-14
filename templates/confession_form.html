@@ -25,7 +25,7 @@
             {{ form.hidden_tag() }}
             {{ wtf.form_errors(form, hiddens="only") }}
 
-            {{ wtf.form_field(form.confession) }}
+            {{ wtf.form_field(form.confession, form_type="inline") }}
             <input id="submitButton" type="submit">
         </form>
     </div>
