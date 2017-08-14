@@ -2,7 +2,8 @@
 
 {% block title %}{{ pageName }}{% endblock %}
 
-{% block header %}
+{% block styles %}
+    {{ super() }}
     <link href="{{ url_for("static", file="css/style.css") }}" rel="stylesheet">
 {% endblock %}
 {% block navbar %}
@@ -20,11 +21,18 @@
 
     <form action="" method="post" class="form" role="form">
         {{ form.hidden_tag() }}
-        <textarea id="TextArea" ng-model="loremIpsum" ng-keyup="autoExpand($event)" placeholder="Confession..."></textarea>
+        <textarea id="TextArea" onchange="expand();" placeholder="Confession..."></textarea>
         <br/>
         <input id="submitButton" type="submit">
     </form>
-
-
 </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        function expand() {
+            var element = this;
+            var scrollHeight = element.scrollHeight -60; // replace 60 by the sum of padding-top and padding-bottom
+            element.style.height =  scrollHeight + "px";
+        }
+    </script>
 {% endblock %}
