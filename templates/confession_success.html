@@ -1,12 +1,27 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}Confession Success{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}
 
+{% block title %}{{ pageName }}{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for("static", filename="css/style.css") }}" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+{% endblock %}
 {% block navbar %}
 
 {% endblock %}
 
 {% block content %}
-	<h1>Received your confession</h1>
+<div class="container" align="center" style="width: 100%; max-width: 600px;">
+    <div style="font-family:'Ubuntu', Helvetica, Arial, sans-serif;">
+        <img src="{{ cover }}">
+        <h1>Received your confession.</h1>
+
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
 
 {% endblock %}
