@@ -1,9 +1,10 @@
 {% extends "bootstrap/base.html" %}
 
-{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}{{ pageName }}{% endblock %}
 
-{% block title %}Confession Form{% endblock %}
-
+{% block header %}
+    <link href="{{ url_for("static", file="css/style.css") }}" rel="stylesheet">
+{% endblock %}
 {% block navbar %}
 
 {% endblock %}
@@ -12,9 +13,18 @@
 <div class="container">
 	<h1>This is the form for confessions.</h1>
 
-	<img src={{ profilePic }}></img>
-	<img src={{ cover }}></img>
+    <h1>{{ pageName }}</h1>
+    <em style="color:#95a5a6"> the truth will set you free </em>
 
-	{{ wtf.quick_form(form) }}
+	<img src="{{ cover }}"></img>
+
+    <form action="" method="post" class="form" role="form">
+        {{ form.hidden_tag() }}
+        <textarea id="TextArea" ng-model="loremIpsum" ng-keyup="autoExpand($event)" placeholder="Confession..."></textarea>
+        <br/>
+        <input id="submitButton" type="submit">
+    </form>
+
+
 </div>
 {% endblock %}

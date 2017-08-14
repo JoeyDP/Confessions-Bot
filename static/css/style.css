@@ -1,0 +1,55 @@
+body {
+  background:#34495e;
+  padding-top:7%;
+}
+
+h1 {
+  color:#ecf0f1;
+  font-weight:400;
+  font-family:'Ubuntu', Helvetica, Arial, sans-serif;
+  margin-bottom: 1px;
+}
+
+
+textarea {
+  height:70%;
+  max-width:600px;
+  color:#2c3e50;
+  font-weight:400;
+  font-size:15px;
+  font-family:'Ubuntu', Helvetica, Arial, sans-serif;
+  width:100%;
+  background:#fff;
+  border-radius:3px;
+  line-height:2em;
+  border:none;
+  box-shadow:0px 0px 5px 1px rgba(0,0,0,0.1);
+  padding:30px;
+    margin-top: 25px;
+  -webkit-transition: height 2s ease;
+-moz-transition: height 2s ease;
+-ms-transition: height 2s ease;
+-o-transition: height 2s ease;
+transition: height 2s ease;
+}
+
+* {
+  -webkit-font-smoothing:antialiased !important;
+}
+
+#submitButton
+{
+padding: 10px 20px 11px !important;
+font-size: 15px !important;
+background-color: #2980b9;
+font-weight: bold;
+color: #ffffff;
+border-radius: 100px;
+-moz-border-radius: 100px;
+-webkit-border-radius: 100px;
+border: 1px solid #2980b9;
+cursor: pointer;
+-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+

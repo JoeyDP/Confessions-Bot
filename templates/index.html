@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UA confession</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+      <link href='https://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+<div ng-app="myApp">
+<div ng-controller="AppCtrl" align="center">
+    
+    <h1> UA Confessions </h1>
+    <em style="color:#95a5a6"> the truth will set you free </em>
+    <form action="" method="post">
+        <input id="csrf_token" name="csrf_token" type="hidden" value="Ijg3OGE5MmRkZDg0ZmI1OTI5OWMxMTIwZGU5YzJmNTkwY2EyNjA4ZTQi.DHMDFA.QiLPtvYuD5yst4AmRyem873Cwq8">
+<textarea id="TextArea" ng-model="loremIpsum" ng-keyup="autoExpand($event)" placeholder="Confession...">
+</textarea>
+        <br/>
+        <input id="submitButton" type="submit">
+    </form>
+  </div>
+</div>
+  <script src='http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js'></script>
+
+    <script src="js/index.js"></script>
+
+</body>
+</html>
