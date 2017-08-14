@@ -7,6 +7,7 @@
 {% block styles %}
     {{ super() }}
     <link href="{{ url_for("static", filename="css/style.css") }}" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
 {% endblock %}
 {% block navbar %}
 
@@ -24,16 +25,11 @@
         {{ form.hidden_tag() }}
         {{ wtf.form_errors(form, hiddens="only") }}
 
-        {{ wtf.form_field(form.confession) }}
+        {{ wtf.form_field(form.confession, label=False) }}
         <input id="submitButton" type="submit">
     </form>
 </div>
 {% endblock %}
 {% block scripts %}
-    <script>
-        function expand(element) {
-            var scrollHeight = element.scrollHeight -60; // replace 60 by the sum of padding-top and padding-bottom
-            element.style.height =  scrollHeight + "px";
-        }
-    </script>
+
 {% endblock %}
