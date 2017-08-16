@@ -101,12 +101,6 @@ class Confession(SQLBase, Base):
         query = query.filter_by(page_id=page_id, status="fresh")
         query = query.order_by(Confession.timestamp.asc())
         confession = query.first()
-        fresh = query.all()
-        debug("All fresh:")
-        for confession in fresh:
-            debug("status: " + str(confession.status))
-            debug("timestamp: " + str(confession.timestamp))
-            debug()
         return confession
 
     def getReferencedConfession(self):
