@@ -66,10 +66,15 @@ class ButtonMessage(Message):
         }
         return data
 
-    def addButton(self, text, payload):
+    def addButton(self, text, payload=None, url=None):
         if len(self.buttons) == 3:
             raise RuntimeError("ButtonMessage can only have 3 options.")
-        self.buttons.append(Button(text, payload))
+        if url is None:
+            self.buttons.append(Button(text, payload))
+        elif payload is None:
+            self.buttons.append(URLButton(text, url))
+        else:
+            raise RuntimeError("Both url and payload given for button, pick one.")
 
 
 class GenericMessage(Message):
@@ -122,10 +127,15 @@ class Element:
             }
         return data
 
-    def addButton(self, text, payload):
+    def addButton(self, text, payload=None, url=None):
         if len(self.buttons) == 3:
             raise RuntimeError("Element can only have 3 options.")
-        self.buttons.append(Button(text, payload))
+        if url is None:
+            self.buttons.append(Button(text, payload))
+        elif payload is None:
+            self.buttons.append(URLButton(text, url))
+        else:
+            raise RuntimeError("Both url and payload given for button, pick one.")
 
 
 def postback(func):

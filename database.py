@@ -1,5 +1,6 @@
 import os
 import datetime
+import re
 
 from sqlalchemy import create_engine, or_, and_
 from sqlalchemy.sql import func
@@ -83,6 +84,7 @@ class Confession(SQLBase, Base):
     text = Column(Text)
     time_updated = Column(DateTime, onupdate=datetime.datetime.now)
     fb_id = Column(String(128))
+    index = Column(Integer)
 
     @staticmethod
     def findById(id):
@@ -103,9 +105,17 @@ class Confession(SQLBase, Base):
             debug()
         return confession
 
-    def setPosted(self, fb_id):
+    def getReferencedConfession(self):
+        result = re.search(r'^(?:\#|\@)(\d+)\s', self.text)
+        if result:
+            index = result.group(1)
+            if index:
+                return self.session.query(Confession).filter_by(page_id=self.page_id, index=index).one_or_none()
+
+    def setPosted(self, fb_id, index):
         self.status = "posted"
         self.fb_id = fb_id
+        self.index = index
 
     def setPending(self):
         self.status = "pending"

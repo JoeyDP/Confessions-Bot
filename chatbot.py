@@ -84,7 +84,14 @@ def actualListPages(sender, clientToken):
 
 def sendConfession(confession):
     admin = confession.page.admin_messenger_id
-    message = ButtonMessage("[{}]: {}".format(confession.page.name, confession.text))
+    text = "[{}]\n{}\n\"{}\"".format(confession.page.name, confession.timestamp, confession.text)
+    message = ButtonMessage(text)
+
+    referencedConfession = confession.getReferencedConfession()
+    if referencedConfession:
+        url = facebook.postUrl(referencedConfession.fb_id)
+        message.addButton("View {}".format(referencedConfession.index), url=url)
+
     message.addButton("Post", acceptConfession(confessionID=confession.id))
     message.addButton("Discard", rejectConfession(confessionID=confession.id))
     status = message.send(admin)
@@ -167,11 +174,12 @@ def acceptConfession(sender, confessionID=None):
         return
 
     fbPage = facebook.FBPage(confession.page)
-    postID = fbPage.postConfession(confession.text)
-    if postID:
+    result = fbPage.postConfession(confession)
+    if result:
+        postID, index = result
         message = TextMessage("Posted confession: {}".format(facebook.postUrl(postID)))
         message.send(sender)
-        confession.setPosted(postID)
+        confession.setPosted(postID, index)
     else:
         message = TextMessage("Failed to post confession.")
         message.send(sender)

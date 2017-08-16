@@ -77,22 +77,32 @@ def loginRedirectURI(sender):
     return url_for("login_redirect", sender=sender, _external=True)
 
 
-class FBPost:
-    def __init__(self, id, text):
+class FBObject:
+    def __init__(self, id):
         self.id = id
-        self.text = text
-
-class FBPage:
-    def __init__(self, page):
-        self._page = page
-        self.id = page.fb_id
-        self.token = page.token
 
     def query(self, endpoint="", fields=list(), **parameters):
         return queryFacebook(str(self.id) + "/" + endpoint, self.token, fields, **parameters)
 
     def post(self, endpoint="", **parameters):
         return postFacebook(str(self.id) + "/" + endpoint, self.token, **parameters)
+
+
+class FBPost(FBObject):
+    def __init__(self, id, text=None):
+        super().__init__(id)
+        self.text = text
+
+    def addComment(self, message):
+        response = self.post("comments", message=message)
+        if response:
+            return response.get("id")
+
+
+class FBPage(FBObject):
+    def __init__(self, page):
+        super().__init__(page.fb_id)
+        self.token = page.token
 
     def getName(self):
         data = self.query()
@@ -130,8 +140,9 @@ class FBPage:
                     index = result.group(1)
                     return int(index)
 
-    def postConfession(self, text, index=None):
-        if index is None:
+    def postConfession(self, confession):
+        referencedConfession = confession.getReferencedConfession()
+        if not referencedConfession:
             lastIndex = self.getLastConfessionIndex()
             debug("Last index: " + str(lastIndex))
             if lastIndex:
@@ -139,7 +150,14 @@ class FBPage:
             else:
                 index = 1
 
-        message = "#{} {}".format(str(index), text)
-        response = self.post("feed", message=message)
-        if response:
-            return response.get("id")
+            message = "#{} {}".format(str(index), confession.text)
+            response = self.post("feed", message=message)
+            if response:
+                return response.get("id"), index
+        else:
+            post = FBPost(referencedConfession.fb_id)
+            id = post.addComment(confession.text)
+            if id:
+                return id, None
+
+
