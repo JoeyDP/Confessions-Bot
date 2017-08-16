@@ -93,9 +93,21 @@ class FBPost(FBObject):
         super().__init__(id)
         self.text = text
 
+    def fetchText(self):
+        response = self.query()
+        log(response)
+        if response:
+            data = response.get("data")
+            if data:
+                self.text = data.get("message")
+                return self.text is not None
+
     def getIndex(self):
         if not self.text:
-            return None
+            status = self.fetchText()
+            if not status:
+                return None
+
         result = re.search(r'^\#(\d+)\s', self.text)
         if result:
             index = result.group(1)
