@@ -13,8 +13,11 @@ CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 APP_ID = os.environ["APP_ID"]
 
 
-def makeRequest(endpoint, method="GET", **parameters):
+def makeRequest(endpoint, method="GET", access_token=None, **parameters):
     url = urljoin(BASE_URL, endpoint)
+    if access_token:
+        parameters['access_token'] = access_token
+    
     if method == "GET":
         r = requests.get(url, params=parameters)
     elif method == "POST":
@@ -80,6 +83,7 @@ def loginRedirectURI(sender):
 class FBObject:
     def __init__(self, id):
         self.id = id
+        self.token = None
 
     def query(self, endpoint="", fields=list(), **parameters):
         return queryFacebook(str(self.id) + "/" + endpoint, self.token, fields, **parameters)
