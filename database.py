@@ -92,6 +92,10 @@ class Confession(SQLBase, Base):
         return confession
 
     @staticmethod
+    def findByStatus(status):
+        return Confession.session.query(Confession).filter_by(status=status).all()
+
+    @staticmethod
     def getFirstFresh(page_id):
         query = Confession.session.query(Confession)
         query = query.filter_by(page_id=page_id, status="fresh")

@@ -225,18 +225,35 @@ def exceptionOccured(e):
 
 def adminMessage(sender, message):
     if message == "setup":
-        response = TextMessage("Running setup")
-        response.send(sender)
-        profile.setup()
-        return True
-
-    if message.startswith("@all"):
-        # text = message[5:]
-        # log("sending message to everyone:")
-        # log(text)
-        # broadcast = TextMessage(text)
-        # for person in Person.everyone():
-        #     broadcast.send(person.fbID)
-        return True
+        return runSetup(sender, message)
+    elif message == "indexConfessions":
+        return indexConfessions()
+    elif message.startswith("@all"):
+        return toAll(sender, message)
 
     return False
+
+
+def runSetup(sender, message):
+    response = TextMessage("Running setup")
+    response.send(sender)
+    profile.setup()
+    return True
+
+def indexConfessions():
+    for confession in Confession.findByStatus("posted"):
+        post = facebook.FBPost(confession.fb_id, confession.text)
+        index = post.getIndex()
+        if index:
+            confession.index = index
+            confession.save()
+
+def toAll(sender, message):
+    # text = message[5:]
+    # log("sending message to everyone:")
+    # log(text)
+    # broadcast = TextMessage(text)
+    # for person in Person.everyone():
+    #     broadcast.send(person.fbID)
+    return True
+

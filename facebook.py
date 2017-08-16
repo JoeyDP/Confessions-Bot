@@ -93,6 +93,14 @@ class FBPost(FBObject):
         super().__init__(id)
         self.text = text
 
+    def getIndex(self):
+        if not self.text:
+            return None
+        result = re.search(r'^\#(\d+)\s', self.text)
+        if result:
+            index = result.group(1)
+            return int(index)
+
     def addComment(self, message):
         response = self.post("comments", message=message)
         if response:
@@ -135,10 +143,9 @@ class FBPage(FBObject):
         posts = self.getRecentPosts()
         if posts:
             for post in posts:
-                result = re.search(r'^\#(\d+)\s', post.text)
-                if result:
-                    index = result.group(1)
-                    return int(index)
+                index = post.getIndex()
+                if index:
+                    return index
 
     def postConfession(self, confession):
         referencedConfession = confession.getReferencedConfession()
