@@ -227,7 +227,7 @@ def adminMessage(sender, message):
     if message == "setup":
         return runSetup(sender, message)
     elif message == "indexConfessions":
-        return indexConfessions()
+        return indexConfessions(sender, message)
     elif message.startswith("@all"):
         return toAll(sender, message)
 
@@ -240,13 +240,16 @@ def runSetup(sender, message):
     profile.setup()
     return True
 
-def indexConfessions():
+def indexConfessions(sender, message):
+    response = TextMessage("Indexing confessions")
+    response.send(sender)
     for confession in Confession.findByStatus("posted"):
         post = facebook.FBPost(confession.fb_id, token=confession.page.token)    # do not give confessions text, it will be fetched (with index)
         index = post.getIndex()
         if index:
             confession.index = index
             confession.save()
+    return True
 
 def toAll(sender, message):
     # text = message[5:]
