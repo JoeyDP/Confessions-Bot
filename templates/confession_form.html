@@ -20,12 +20,11 @@
         <h1>{{ pageName }}</h1>
         <em style="color:#95a5a6"> the truth will set you free </em><br>
         <form class="form form-horizontal" method="post" role="form">
-            <!--textarea id="TextArea" onchange="expand(this);" placeholder="Confession..."></textarea-->
-
             {{ form.hidden_tag() }}
             {{ wtf.form_errors(form, hiddens="only") }}
 
-            {{ wtf.form_field(form.confession, form_type="inline") }}
+            {{ wtf.form_field(form.confession) }}
+{#            {{ wtf.form_field(form.confession, form_type="inline") }}#}
             <input id="submitButton" type="submit">
         </form>
     </div>
