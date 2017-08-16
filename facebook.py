@@ -102,10 +102,8 @@ class FBPost(FBObject):
         response = self.query()
         log(response)
         if response:
-            data = response.get("data")
-            if data:
-                self.text = data.get("message")
-                return self.text is not None
+            self.text = response.get("message")
+            return self.text is not None
 
     def getIndex(self):
         if not self.text:
