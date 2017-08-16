@@ -242,7 +242,7 @@ def runSetup(sender, message):
 
 def indexConfessions():
     for confession in Confession.findByStatus("posted"):
-        post = facebook.FBPost(confession.fb_id)    # do not give confessions text, it will be fetched (with index)
+        post = facebook.FBPost(confession.fb_id, token=confession.page.token)    # do not give confessions text, it will be fetched (with index)
         index = post.getIndex()
         if index:
             confession.index = index

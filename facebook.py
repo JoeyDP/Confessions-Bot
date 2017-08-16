@@ -17,7 +17,7 @@ def makeRequest(endpoint, method="GET", access_token=None, **parameters):
     url = urljoin(BASE_URL, endpoint)
     if access_token:
         parameters['access_token'] = access_token
-    
+
     if method == "GET":
         r = requests.get(url, params=parameters)
     elif method == "POST":
@@ -93,9 +93,10 @@ class FBObject:
 
 
 class FBPost(FBObject):
-    def __init__(self, id, text=None):
+    def __init__(self, id, text=None, token=None):
         super().__init__(id)
         self.text = text
+        self.token = token
 
     def fetchText(self):
         response = self.query()
@@ -178,7 +179,7 @@ class FBPage(FBObject):
             if response:
                 return response.get("id"), index
         else:
-            post = FBPost(referencedConfession.fb_id)
+            post = FBPost(referencedConfession.fb_id, token=self.token)
             id = post.addComment(confession.text)
             if id:
                 return id, None
