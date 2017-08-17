@@ -84,7 +84,7 @@ def actualListPages(sender, clientToken):
 
 def sendConfession(confession):
     admin = confession.page.admin_messenger_id
-    text = "[{}]\n{}\n\"{}\"".format(confession.page.name, confession.timestamp, confession.text)
+    text = "[{}]\n{}\n\"{}\"".format(confession.page.name, confession.timestamp.strftime("%Y-%m-%d %H:%M"), confession.text)
     message = ButtonMessage(text)
 
     referencedConfession = confession.getReferencedConfession()
