@@ -26,7 +26,11 @@ def makeRequest(endpoint, method="GET", access_token=None, **parameters):
         raise RuntimeError("Unknown request method: " + str(method))
     if r.status_code == 200:
         debug("Url: " + str(url))
-        debug("Response: " + str(r.text))
+        printCap = 640
+        printText = str(r.text)[:printCap]
+        if len(r.text) > printCap:
+            printText += " ..."
+        debug("Response: " + printText)
         return json.loads(r.text)
     else:
         log("Failed to query {}".format(url))
