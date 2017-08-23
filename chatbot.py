@@ -10,7 +10,7 @@ from flask import url_for
 URL = os.environ["URL"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
-
+MAX_MESSAGE_LENGTH = 600
 
 def receivedMessage(sender, recipient, message):
     log("Received message \"{}\" from {}".format(message, sender))
@@ -85,7 +85,17 @@ def actualListPages(sender, clientToken):
 def sendConfession(confession):
     admin = confession.page.admin_messenger_id
     text = "[{}]\n{}\n\"{}\"".format(confession.page.name, confession.timestamp.strftime("%Y-%m-%d %H:%M"), confession.text)
-    message = ButtonMessage(text)
+
+    if len(text) > MAX_MESSAGE_LENGTH:     # Facebook limits messages to 640 chars, we take 600 to be sure
+        index = 0
+        while index < len(text) - MAX_MESSAGE_LENGTH:
+            subset = text[index:index+MAX_MESSAGE_LENGTH]
+            message = TextMessage(subset)
+            message.send(admin)
+            index += MAX_MESSAGE_LENGTH
+
+    subset = text[index:]
+    message = ButtonMessage(subset)
 
     referencedConfession = confession.getReferencedConfession()
     if referencedConfession:
