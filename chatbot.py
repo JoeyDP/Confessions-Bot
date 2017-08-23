@@ -86,12 +86,14 @@ def sendConfession(confession):
     admin = confession.page.admin_messenger_id
     text = "[{}]\n{}\n\"{}\"".format(confession.page.name, confession.timestamp.strftime("%Y-%m-%d %H:%M"), confession.text)
 
+    index = 0
     if len(text) > MAX_MESSAGE_LENGTH:     # Facebook limits messages to 640 chars, we take 600 to be sure
-        index = 0
         while index < len(text) - MAX_MESSAGE_LENGTH:
             subset = text[index:index+MAX_MESSAGE_LENGTH]
             message = TextMessage(subset)
-            message.send(admin)
+            status = message.send(admin)
+            if not status:
+                raise RuntimeError("Failed to send first parts of long confession to admin")
             index += MAX_MESSAGE_LENGTH
 
     subset = text[index:]
@@ -108,6 +110,8 @@ def sendConfession(confession):
     if status:
         confession.setPending()
         confession.save()
+    else:
+        raise RuntimeError("Failed to send confession to admin.")
     return status
 
 
