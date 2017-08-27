@@ -68,6 +68,11 @@ def getMenuData():
                         "title": "List pages",
                         "type": "postback",
                         "payload": json.dumps(chatbot.listPages())
+                    },
+                    {
+                        "title": "Resend Pending",
+                        "type": "postback",
+                        "payload": json.dumps(chatbot.sendPending())
                     }
                 ]
             },

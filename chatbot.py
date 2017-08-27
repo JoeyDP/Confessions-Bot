@@ -219,9 +219,9 @@ def rejectConfession(sender, confessionID=None):
 
 @postback
 def sendPending(sender):
-    pass
-    # TODO send pending confession of every page of admin?
-
+    pendingConfessions = Confession.getPending(sender)
+    for pending in pendingConfessions:
+        sendConfession(pending)
 
 
 #################

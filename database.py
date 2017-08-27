@@ -103,6 +103,14 @@ class Confession(SQLBase, Base):
         confession = query.first()
         return confession
 
+    @staticmethod
+    def getPending(admin):
+        """ Returns all pending confessions of admin. """
+        query = Confession.session.query(Confession)
+        query = query.filter(Confession.page.admin_messenger_id == admin)
+        pending = query.all()
+        return pending
+
     def getReferencedConfession(self):
         result = re.search(r'^(?:\#|\@)(\d+)\s', self.text)
         if result:
