@@ -109,7 +109,7 @@ class Confession(SQLBase, Base):
         query = Confession.session.query(Confession)
         query = query.join(Page, Confession.page_id == Page.fb_id)
         query = query.filter(Page.admin_messenger_id == admin)
-        query = query.filter_by(status="pending")
+        query = query.filter(Confession.status == "pending")
         pending = query.all()
         return pending
 
