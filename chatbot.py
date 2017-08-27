@@ -220,8 +220,12 @@ def rejectConfession(sender, confessionID=None):
 @postback
 def sendPending(sender):
     pendingConfessions = Confession.getPending(sender)
-    for pending in pendingConfessions:
-        sendConfession(pending)
+    if len(pendingConfessions) == 0:
+        message = TextMessage("No pending confessions.")
+        message.send(sender)
+    else:
+        for pending in pendingConfessions:
+            sendConfession(pending)
 
 
 #################
