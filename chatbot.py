@@ -225,7 +225,8 @@ def sendPending(sender):
         message.send(sender)
     else:
         for pending in pendingConfessions:
-            sendConfession(pending)
+            print(pending)
+            # sendConfession(pending)
 
 
 #################

@@ -108,8 +108,7 @@ class Confession(SQLBase, Base):
         """ Returns all pending confessions of admin. """
         query = Confession.session.query(Confession)
         query = query.join(Page, Confession.page_id == Page.fb_id)
-        query = query.filter(Confession.status == "pending")
-        query = query.filter(Page.admin_messenger_id == admin)
+        query = query.filter(Confession.status == "pending", Page.admin_messenger_id == admin)
         pending = query.all()
         return pending
 
