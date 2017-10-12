@@ -56,17 +56,7 @@ class Chatbot:
             args = data.get("args", dict())
             if not pb:
                 raise RuntimeError("No postback for action '{}'.".format(action))
-            result = pb.func(self, sender, **args)
-            log("result:")
-            log(result)
-
-
-    # @classmethod
-    # def getPostbacks(cls):
-    #     clsPB = Chatbot.postbacks.get(cls)
-    #     if clsPB is None:
-    #         clsPB = Chatbot.postbacks[cls] = dict()
-    #     return clsPB
+            pb.func(self, sender, **args)
 
     def adminMessage(self, sender, message):
         # TODO: create @command decorator
@@ -82,7 +72,7 @@ class Chatbot:
         return True
 
 
-class PB:
+class postback:
     def __init__(self, func):
         self.func = func
 
@@ -93,25 +83,6 @@ class PB:
             "action": action,
             "args": kwargs,
         }
-
-
-def postback(func):
-    action = func.__name__
-
-    # log(cls)
-    # postbacks = Chatbot.getPostbacks(cls)
-    # postbacks[action] = func
-    pb = PB(func)
-    return pb
-
-    # def wrap(**kwargs):
-    #     return {
-    #         "type": "action",
-    #         "action": action,
-    #         "args": kwargs,
-    #     }
-    #
-    # return wrap
 
 
 class ConfessionsVoterBot(Chatbot):
