@@ -78,11 +78,13 @@ class postback:
 
     def __call__(self, *args, **kwargs):
         action = func.__name__
-        return {
+        payload = {
             "type": "action",
             "action": action,
-            "args": kwargs,
         }
+        if len(kwargs) > 0:
+            payload["args"] = kwargs
+        return payload
 
 class ConfessionsBot(Chatbot):
     def onMessage(self, sender, message):
@@ -94,14 +96,6 @@ class ConfessionsBot(Chatbot):
 
     @postback
     def listPages(self, sender):
-        raise NotImplementedError
-
-    @postback
-    def acceptConfession(self, sender, confessionID=None):
-        raise NotImplementedError
-
-    @postback
-    def rejectConfession(self, sender, confessionID=None):
         raise NotImplementedError
 
     @postback
