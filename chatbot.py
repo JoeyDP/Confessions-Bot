@@ -84,12 +84,56 @@ class postback:
             "args": kwargs,
         }
 
+class ConfessionsBot(Chatbot):
+    def onMessage(self, sender, message):
+        pass
 
-class ConfessionsVoterBot(Chatbot):
-    pass
+    @postback
+    def sendWelcome(self, sender):
+        raise NotImplementedError
+
+    @postback
+    def listPages(self, sender):
+        raise NotImplementedError
+
+    @postback
+    def acceptConfession(self, sender, confessionID=None):
+        raise NotImplementedError
+
+    @postback
+    def rejectConfession(self, sender, confessionID=None):
+        raise NotImplementedError
+
+    @postback
+    def sendPending(self, sender):
+        raise NotImplementedError
 
 
-class ConfessionsAdminBot(Chatbot):
+class ConfessionsVoterBot(ConfessionsBot):
+    def onMessage(self, sender, message):
+        pass
+
+    @postback
+    def sendWelcome(self, sender):
+        pass
+
+    @postback
+    def listPages(self, sender):
+        pass
+
+    @postback
+    def acceptConfession(self, sender, confessionID=None):
+        pass
+
+    @postback
+    def rejectConfession(self, sender, confessionID=None):
+        pass
+
+    @postback
+    def sendPending(self, sender):
+        pass
+
+class ConfessionsAdminBot(ConfessionsBot):
     def onMessage(self, sender, message):
         pass
 
