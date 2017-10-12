@@ -37,6 +37,9 @@ def webpage():
     return "Confessions!", 200
 
 
+adminBot = chatbot.ConfessionsAdminBot()
+voterBot = chatbot.ConfessionsVoterBot()
+
 @app.route('/login/<sender>')
 def login_redirect(sender):
     """ endpoint for redirect after login. """
@@ -44,7 +47,7 @@ def login_redirect(sender):
     def afterLogin():
         code = request.args.get("code")
         if sender and code:
-            chatbot.loggedIn(sender, code)
+            adminBot.loggedIn(sender, code)
 
     # TODO: change to a redirect to the page form
     return render_template('login_redirect_landing.html')
@@ -60,7 +63,7 @@ def confession_form(pageID):
         confession.page_id = pageID
         confession.add()
         if not confession.page.hasPendingConfession():
-            chatbot.sendFreshConfession(confession.page)
+            adminBot.sendFreshConfession(confession.page)
 
         return redirect(url_for('confession_success'))
     page = Page.findById(pageID)
@@ -134,12 +137,12 @@ def receivedRequest(request):
 def receivedMessage(sender, recipient, message):
     # log("Received message \"{}\" from {}".format(message, sender))
     if sender != recipient:     # filter messages to self
-        chatbot.receivedMessage(sender, recipient, message)
+        adminBot.receivedMessage(sender, recipient, message)
 
 
 def receivedPostback(sender, recipient, payload):
     # log("Received postback with payload \"{}\" from {}".format(payload, sender))
-    chatbot.receivedPostback(sender, recipient, payload)
+    adminBot.receivedPostback(sender, recipient, payload)
 
 
 if __name__ == '__main__':

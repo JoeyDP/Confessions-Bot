@@ -138,30 +138,17 @@ class Element:
             raise RuntimeError("Both url and payload given for button, pick one.")
 
 
-def postback(func):
-    action = func.__name__
-    Postback.registered[action] = func
-    def wrap(**kwargs):
-        # pb = Postback(action, **kwargs)
-        # return pb
-        return {
-            "type": "action",
-            "action": action,
-            "args": kwargs,
-        }
-    return wrap
-
-
-# decorator
-class Postback:
-    registered = dict()
-
-    # def __init__(self, action, **kwargs):
-    #     self.payload = {
-    #         "type": "action",
-    #         "action": action,
-    #         "args": kwargs,
-    #     }
+# def postback(func):
+#     """ Decorator """
+#     action = func.__name__
+#     Postback.registered[action] = func
+#     def wrap(**kwargs):
+#         return {
+#             "type": "action",
+#             "action": action,
+#             "args": kwargs,
+#         }
+#     return wrap
 
 
 class Button:
