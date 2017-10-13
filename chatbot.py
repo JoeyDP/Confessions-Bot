@@ -77,7 +77,7 @@ class postback:
         self.func = func
 
     def __call__(self, *args, **kwargs):
-        action = func.__name__
+        action = self.func.__name__
         payload = {
             "type": "action",
             "action": action,
