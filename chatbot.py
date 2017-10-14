@@ -105,7 +105,7 @@ class ConfessionsBot(Chatbot):
 
 class ConfessionsVoterBot(ConfessionsBot):
     def onMessage(self, sender, message):
-        pass
+        super().onMessage(sender, message)
 
     @postback
     def sendWelcome(self, sender):
@@ -129,7 +129,7 @@ class ConfessionsVoterBot(ConfessionsBot):
 
 class ConfessionsAdminBot(ConfessionsBot):
     def onMessage(self, sender, message):
-        pass
+        super().onMessage(sender, message)
 
     def sendLogin(self, sender):
         scopes = ",".join(["manage_pages", "publish_pages", "pages_show_list"])
@@ -152,6 +152,13 @@ class ConfessionsAdminBot(ConfessionsBot):
         message = TextMessage("Couldn't access your pages, please try again:")
         message.send(sender)
         self.sendLogin(sender)
+
+    def exceptionOccured(self, e):
+        log("Exception in request.")
+        log(str(e))
+        if ADMIN_SENDER_ID:
+            notification = TextMessage("Exception:\t{}".format(str(e)))
+            notification.send(ADMIN_SENDER_ID)
 
     def actualListPages(self, sender, clientToken):
         pages = facebook.listManagedPages(clientToken)
@@ -318,17 +325,6 @@ class ConfessionsAdminBot(ConfessionsBot):
                 confession.save()
         return True
 
-
-#################
-#   Management  #
-#################
-
-def exceptionOccured(e):
-    log("Exception in request.")
-    log(str(e))
-    if ADMIN_SENDER_ID:
-        notification = TextMessage("Exception:\t{}".format(str(e)))
-        notification.send(ADMIN_SENDER_ID)
 
 
 

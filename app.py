@@ -95,10 +95,10 @@ def teardown_request(exception=None):
             for func in getattr(g, 'call_after_request', ()):
                 func()
         except Exception as e:
-            chatbot.exceptionOccured(e)
+            adminBot.exceptionOccured(e)
             traceback.print_exc()
     else:
-        chatbot.exceptionOccured(exception)
+        adminBot.exceptionOccured(exception)
 
 
 @app.route('/', methods=['POST'])
