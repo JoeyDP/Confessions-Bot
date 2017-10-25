@@ -1,0 +1,50 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}{{ pageName }}{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="{{ url_for("static", filename="css/style.css") }}" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+{% endblock %}
+{% block navbar %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container" align="center" style="width: 100%; max-width: 600px;">
+    <div style="font-family:'Ubuntu', Helvetica, Arial, sans-serif;">
+        <img src="{{ cover }}">
+        {% if confession.status == "posted" %}
+            <a href="{{ url }}">
+            {% if confession.index %}
+                <h1 style="color:green;">Confession #{{ confession.index }}</h1>
+            {% else %}
+                <h1 style="color:green;">Reaction to #{{ confession.getReferencedConfession().index }}</h1>
+            {% endif %}
+            </a>
+        {% elif confession.status == "rejected" %}
+            <h1 style="color:darkred;">Rejected Confession</h1>
+        {% else %}
+            <h1>Pending Confession</h1>
+            Check back on this page for updates (add it to your bookmarks).
+        {% endif %}
+
+        <div class="row" style="margin-top:20px;">
+            <p style="outline: 2px solid black;padding: 50px;">
+                {{ confession.text }}
+            </p>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            Status: {{ confession.status }}
+            {% if confession.status == "posted" %}
+                <br><a href="{{ url }}">{{ url }}</a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

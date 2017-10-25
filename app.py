@@ -4,6 +4,7 @@ import traceback
 from util import *
 from message import *
 import chatbot
+import facebook
 from form import ConfessionForm
 from database import Confession, Page
 from facebook import FBPage
@@ -56,7 +57,7 @@ def login_redirect(sender):
     return render_template('login_redirect_landing.html')
 
 
-@app.route('/confess/<pageID>', methods=('GET', 'POST'))
+@app.route('/confess/<pageID>', methods=['GET', 'POST'])
 def confession_form(pageID):
     form = ConfessionForm(request.form)
     if form.validate_on_submit():
@@ -68,7 +69,7 @@ def confession_form(pageID):
         if not confession.page.hasPendingConfession():
             adminBot.sendFreshConfession(confession.page)
 
-        return redirect(url_for('confession_success'))
+        return redirect(url_for('confession_status', confession.id))
     page = Page.findById(pageID)
     if page:
         fbPage = FBPage(page)
@@ -79,9 +80,21 @@ def confession_form(pageID):
         abort(404)
 
 
-@app.route('/confess_success')
-def confession_success():
-    return render_template('confession_success.html')
+@app.route('/confession/<confessionID>', methods=['GET'])
+def confession_status(confessionID):
+    confession = Confession.findById(confessionID)
+    if confession is None:
+        abort(404)
+
+    url = None
+    if confession.status == "posted":
+        url = facebook.postUrl(confession.fb_id)
+    return render_template("confession.html", confession=confession, url=url)
+
+
+# @app.route('/confess_success')
+# def confession_success():
+#     return render_template('confession_success.html')
 
 
 @app.route('/', methods=['POST'])
