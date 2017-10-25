@@ -5,9 +5,10 @@ from database import *
 import facebook
 import profile
 from flask import url_for
-import redis
 from rq.decorators import job
-from worker import conn
+
+import worker
+conn = worker.conn
 
 URL = os.environ["URL"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
