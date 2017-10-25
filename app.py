@@ -142,7 +142,7 @@ def receivedMessage(sender, recipient, message):
 
 def receivedPostback(sender, recipient, payload):
     # log("Received postback with payload \"{}\" from {}".format(payload, sender))
-    adminBot.receivedPostback(sender, recipient, payload)
+    adminBot.receivedPostback.delay(sender, recipient, payload)
 
 
 if __name__ == '__main__':

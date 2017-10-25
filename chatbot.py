@@ -42,6 +42,7 @@ class Chatbot:
     def onMessage(self, sender, message):
         pass
 
+    @job('low', connection=conn)
     def receivedPostback(self, sender, recipient, payload):
         log("Received postback with payload \"{}\" from {}".format(payload, sender))
 
