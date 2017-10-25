@@ -9,9 +9,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import sessionmaker, relationship
 
-import app
-
-
 from util import *
 
 SQLBase = declarative_base()
