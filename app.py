@@ -59,7 +59,7 @@ def confession_form(pageID):
     if form.validate_on_submit():
         text = form.confession.data
         confession = Confession()
-        confession.text = text
+        confession.text = text.strip()
         confession.page_id = pageID
         confession.add()
         if not confession.page.hasPendingConfession():
