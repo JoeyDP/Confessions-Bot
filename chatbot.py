@@ -7,16 +7,12 @@ import profile
 from flask import url_for
 import redis
 from rq.decorators import job
-
+from worker import conn
 
 URL = os.environ["URL"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
 MAX_MESSAGE_LENGTH = 600
-
-redis_url = os.getenv('REDIS_URL')
-
-conn = redis.from_url(redis_url)
 
 class Chatbot:
     def __init__(self):
