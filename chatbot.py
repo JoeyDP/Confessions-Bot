@@ -5,10 +5,7 @@ from database import *
 import facebook
 import profile
 from flask import url_for
-from rq.decorators import job
 
-import worker
-conn = worker.conn
 
 URL = os.environ["URL"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
@@ -19,7 +16,6 @@ class Chatbot:
     def __init__(self):
         pass
 
-    @job('low', connection=conn)
     def receivedMessage(self, sender, recipient, message):
         log("Received message \"{}\" from {}".format(message, sender))
         if sender == ADMIN_SENDER_ID:
@@ -39,7 +35,6 @@ class Chatbot:
     def onMessage(self, sender, message):
         pass
 
-    @job('low', connection=conn)
     def receivedPostback(self, sender, recipient, payload):
         log("Received postback with payload \"{}\" from {}".format(payload, sender))
 

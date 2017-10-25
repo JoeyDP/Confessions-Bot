@@ -11,6 +11,10 @@ from facebook import FBPage
 from flask import Flask, request, g, render_template, redirect, url_for, abort
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CSRFProtect
+from rq.decorators import job
+
+import worker
+rqCon = worker.conn
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -127,22 +131,24 @@ def receivedRequest(request):
                     if not message:
                         log("Received message without text from {}.".format(str(sender)))
                         message = ""
-                    receivedMessage(sender, recipient, message)
+                    receivedMessage.delay(sender, recipient, message)
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
                     payload = messaging_event["postback"]["payload"]  # the message's text
-                    receivedPostback(sender, recipient, payload)
+                    receivedPostback.delay(sender, recipient, payload)
 
 
+@job('low', connection=rqCon)
 def receivedMessage(sender, recipient, message):
     # log("Received message \"{}\" from {}".format(message, sender))
     if sender != recipient:     # filter messages to self
-        adminBot.receivedMessage.delay(sender, recipient, message)
+        adminBot.receivedMessage(sender, recipient, message)
 
 
+@job('low', connection=rqCon)
 def receivedPostback(sender, recipient, payload):
     # log("Received postback with payload \"{}\" from {}".format(payload, sender))
-    adminBot.receivedPostback.delay(sender, recipient, payload)
+    adminBot.receivedPostback(sender, recipient, payload)
 
 
 if __name__ == '__main__':
