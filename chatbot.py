@@ -5,6 +5,8 @@ from database import *
 import facebook
 import profile
 from flask import url_for
+import redis
+from rq.decorators import job
 
 
 URL = os.environ["URL"]
@@ -12,11 +14,15 @@ ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
 MAX_MESSAGE_LENGTH = 600
 
+redis_url = os.getenv('REDISTOGO_URL')
+
+conn = redis.from_url(redis_url)
 
 class Chatbot:
     def __init__(self):
         pass
 
+    @job('low', connection=conn)
     def receivedMessage(self, sender, recipient, message):
         log("Received message \"{}\" from {}".format(message, sender))
         if sender == ADMIN_SENDER_ID:

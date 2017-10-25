@@ -137,7 +137,7 @@ def receivedRequest(request):
 def receivedMessage(sender, recipient, message):
     # log("Received message \"{}\" from {}".format(message, sender))
     if sender != recipient:     # filter messages to self
-        adminBot.receivedMessage(sender, recipient, message)
+        adminBot.receivedMessage.delay(sender, recipient, message)
 
 
 def receivedPostback(sender, recipient, payload):
