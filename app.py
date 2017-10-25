@@ -47,11 +47,10 @@ voterBot = chatbot.ConfessionsVoterBot()
 @app.route('/login/<sender>')
 def login_redirect(sender):
     """ endpoint for redirect after login. """
-    @after_this_request
-    def afterLogin():
-        code = request.args.get("code")
-        if sender and code:
-            adminBot.loggedIn(sender, code)
+
+    code = request.args.get("code")
+    if sender and code:
+        adminBot.loggedIn(sender, code)
 
     # TODO: change to a redirect to the page form
     return render_template('login_redirect_landing.html')
@@ -85,33 +84,15 @@ def confession_success():
     return render_template('confession_success.html')
 
 
-def after_this_request(func):
-    if not hasattr(g, 'call_after_request'):
-        g.call_after_request = []
-    g.call_after_request.append(func)
-    return func
-
-
-@app.teardown_request
-def teardown_request(exception=None):
-    if exception is None:
-        try:
-            for func in getattr(g, 'call_after_request', ()):
-                func()
-        except Exception as e:
-            adminBot.exceptionOccured(e)
-            traceback.print_exc()
-    else:
-        adminBot.exceptionOccured(exception)
-
-
 @app.route('/', methods=['POST'])
 @csrf.exempt
 def webhook():
     """ endpoint for processing incoming messaging events. """
-    @after_this_request
-    def afterWebhook():
+    try:
         receivedRequest(request)
+    except Exception as e:
+        adminBot.exceptionOccured(e)
+        traceback.print_exc()
 
     return "ok", 200
 
@@ -140,15 +121,24 @@ def receivedRequest(request):
 
 @job('low', connection=rqCon)
 def receivedMessage(sender, recipient, message):
-    # log("Received message \"{}\" from {}".format(message, sender))
-    if sender != recipient:     # filter messages to self
+    if sender == recipient:  # filter messages to self
+        return
+
+    try:
         adminBot.receivedMessage(sender, recipient, message)
+    except Exception as e:
+        adminBot.exceptionOccured(e)
+        traceback.print_exc()
+
 
 
 @job('low', connection=rqCon)
 def receivedPostback(sender, recipient, payload):
-    # log("Received postback with payload \"{}\" from {}".format(payload, sender))
-    adminBot.receivedPostback(sender, recipient, payload)
+    try:
+        adminBot.receivedPostback(sender, recipient, payload)
+    except Exception as e:
+        adminBot.exceptionOccured(e)
+        traceback.print_exc()
 
 
 if __name__ == '__main__':
