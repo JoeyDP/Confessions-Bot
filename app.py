@@ -69,7 +69,7 @@ def confession_form(pageID):
         if not confession.page.hasPendingConfession():
             adminBot.sendFreshConfession(confession.page)
 
-        return redirect(url_for('confession_status', confession.id))
+        return redirect(url_for('confession_status', confessionID=confession.id))
     page = Page.findById(pageID)
     if page:
         fbPage = FBPage(page)
