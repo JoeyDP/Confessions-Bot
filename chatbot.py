@@ -3,7 +3,6 @@ from urllib.parse import urljoin
 from message import *
 from database import *
 import facebook
-import profile
 from flask import url_for
 
 
@@ -325,6 +324,5 @@ class ConfessionsAdminBot(ConfessionsBot):
         return True
 
 
-
-
+import profile
 
