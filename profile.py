@@ -2,7 +2,7 @@ import os
 import json
 import requests
 from util import *
-import chatbot
+from chatbot import ConfessionsBot
 
 PROFILE_URL = "https://graph.facebook.com/v2.9/me/messenger_profile"
 PARAMS = {"access_token": os.environ["PAGE_ACCESS_TOKEN"]}
@@ -37,7 +37,7 @@ def getStartedButtonData(payload=None):
         }
     data = {
         "get_started": {
-            "payload": json.dumps(chatbot.sendWelcome())
+            "payload": json.dumps(ConfessionsBot.sendWelcome())
         }
     }
     return data
@@ -67,12 +67,12 @@ def getMenuData():
                     {
                         "title": "List pages",
                         "type": "postback",
-                        "payload": json.dumps(chatbot.listPages())
+                        "payload": json.dumps(ConfessionsBot.listPages())
                     },
                     {
                         "title": "Resend Pending",
                         "type": "postback",
-                        "payload": json.dumps(chatbot.sendPending())
+                        "payload": json.dumps(ConfessionsBot.sendPending())
                     }
                 ]
             },
