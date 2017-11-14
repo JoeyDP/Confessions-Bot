@@ -3,6 +3,7 @@ import datetime
 import re
 
 from sqlalchemy import create_engine, or_, and_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from sqlalchemy import Column, ForeignKey, Integer, Boolean, Enum, String, DateTime, select, Text
 from sqlalchemy.ext.declarative import declarative_base
@@ -85,8 +86,12 @@ class Confession(SQLBase, Base):
 
     @staticmethod
     def findById(id):
-        confession = Confession.session.query(Confession).filter_by(id=id).one_or_none()
-        return confession
+        try:
+            confession = Confession.session.query(Confession).filter_by(id=id).one_or_none()
+            return confession
+        except SQLAlchemyError:
+            log("Failed to query for confession with id: " + str(id))
+            return
 
     @staticmethod
     def findByStatus(status):
@@ -115,7 +120,11 @@ class Confession(SQLBase, Base):
         if result:
             index = result.group(1)
             if index:
-                return self.session.query(Confession).filter_by(page_id=self.page_id, index=index).one_or_none()
+                try:
+                    return self.session.query(Confession).filter_by(page_id=self.page_id, index=index).one_or_none()
+                except SQLAlchemyError:
+                    log("Failed to query for confession with index: " + str(index))
+                    return
 
     def setPosted(self, fb_id, index):
         self.status = "posted"
