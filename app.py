@@ -6,7 +6,7 @@ from message import *
 import chatbot
 import facebook
 from form import ConfessionForm
-from database import Confession, Page
+from database import Confession, Page, Base
 from facebook import FBPage
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
@@ -75,8 +75,11 @@ def confession_form(pageID):
             return redirect(url_for('confession_status', confessionID=confession.id))
         except IntegrityError as e:
             log(str(e))
+            Base.session.rollback()
             form.confession.errors.append("This confession has already been submitted.")
         except SQLAlchemyError as e:
+            log(str(e))
+            Base.session.rollback()
             form.confession.errors.append("Your confessions is not valid.")
     page = Page.findById(pageID)
     if page:
