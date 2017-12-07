@@ -84,6 +84,7 @@ class postback:
             payload["args"] = kwargs
         return payload
 
+
 class ConfessionsBot(Chatbot):
     def onMessage(self, sender, message):
         pass

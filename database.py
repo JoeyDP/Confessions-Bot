@@ -79,7 +79,7 @@ class Confession(SQLBase, Base):
     page_id = Column(String(128), ForeignKey(Page.fb_id, onupdate="CASCADE", ondelete="CASCADE"))
     page = relationship("Page", back_populates="confessions")
     status = Column(Enum("fresh", "pending", "posted", "rejected", name="confessionStatusEnum"), default="fresh")
-    text = Column(Text)
+    text = Column(Text, unique=True)
     time_updated = Column(DateTime, onupdate=datetime.datetime.now)
     fb_id = Column(String(128))
     index = Column(Integer)

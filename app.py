@@ -8,6 +8,7 @@ import facebook
 from form import ConfessionForm
 from database import Confession, Page
 from facebook import FBPage
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from flask import Flask, request, g, render_template, redirect, url_for, abort
 from flask_bootstrap import Bootstrap
@@ -65,12 +66,18 @@ def confession_form(pageID):
         confession = Confession()
         confession.text = text.strip()
         confession.page_id = pageID
-        confession.add()
-        if not confession.page.hasPendingConfession():
-            adminBot.sendFreshConfession(confession.page)
+        try:
+            confession.add()
+            if not confession.page.hasPendingConfession():
+                adminBot.sendFreshConfession(confession.page)
 
-        log("new confession id: " + str(confession.id))
-        return redirect(url_for('confession_status', confessionID=confession.id))
+            log("new confession id: " + str(confession.id))
+            return redirect(url_for('confession_status', confessionID=confession.id))
+        except IntegrityError as e:
+            log(str(e))
+            form.confession.errors.append("This confession has already been submitted.")
+        except SQLAlchemyError as e:
+            form.confession.errors.append("Your confessions is not valid.")
     page = Page.findById(pageID)
     if page:
         fbPage = FBPage(page)
@@ -91,11 +98,6 @@ def confession_status(confessionID):
     if confession.status == "posted":
         url = facebook.postUrl(confession.fb_id)
     return render_template("confession.html", confession=confession, url=url)
-
-
-# @app.route('/confess_success')
-# def confession_success():
-#     return render_template('confession_success.html')
 
 
 @app.route('/', methods=['POST'])
