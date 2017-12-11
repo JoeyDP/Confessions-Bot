@@ -135,7 +135,7 @@ def receivedRequest(request):
 
                 if messaging_event.get("postback"):  # user clicked/tapped "postback" button in earlier message
                     payload = messaging_event["postback"]["payload"]  # the message's text
-                    receivedPostback(sender, recipient, payload)
+                    receivedPostback.delay(sender, recipient, payload)
 
 
 @job('low', connection=rqCon)
@@ -150,9 +150,11 @@ def receivedMessage(sender, recipient, message):
         traceback.print_exc()
 
 
+@job('low', connection=rqCon)
 def receivedPostback(sender, recipient, payload):
     try:
-        adminBot.receivedPostback(sender, recipient, payload)
+        with app.app_context():
+            adminBot.receivedPostback(sender, recipient, payload)
     except Exception as e:
         adminBot.exceptionOccured(e)
         traceback.print_exc()
