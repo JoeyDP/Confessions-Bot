@@ -26,6 +26,11 @@ csrf = CSRFProtect(app)
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 app.secret_key = VERIFY_TOKEN
 
+SERVER_NAME = os.environ.get("SERVER_NAME")
+if SERVER_NAME:
+    app.config.update(SERVER_NAME=SERVER_NAME)
+    
+
 @app.route('/', methods=['GET'])
 @csrf.exempt
 def verify():
