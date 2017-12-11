@@ -5,7 +5,7 @@ from database import *
 import facebook
 from flask import url_for
 
-from worker import queue
+import worker
 
 URL = os.environ["URL"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
@@ -55,7 +55,7 @@ class Chatbot:
             if not pb:
                 raise RuntimeError("No postback for action '{}'.".format(action))
             if pb.isAsync:
-                queue.enqueue(pb.func, self, sender, **args)
+                worker.queue.enqueue(pb.func, self, sender, **args)
             else:
                 pb.func(self, sender, **args)
 
