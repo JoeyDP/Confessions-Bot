@@ -5,6 +5,7 @@ from database import *
 import facebook
 from flask import url_for
 
+from worker import queue
 
 URL = os.environ["URL"]
 ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
@@ -50,11 +51,13 @@ class Chatbot:
         if type == "action":
             action = data["action"]
             pb = self.__getattribute__(action)
-            log(pb)
             args = data.get("args", dict())
             if not pb:
                 raise RuntimeError("No postback for action '{}'.".format(action))
-            pb.func(self, sender, **args)
+            if pb.isAsync:
+                queue.enqueue(pb.func, self, sender, **args)
+            else:
+                pb.func(self, sender, **args)
 
     def adminMessage(self, sender, message):
         # TODO: create @command decorator
@@ -70,9 +73,16 @@ class Chatbot:
         return True
 
 
-class postback:
-    def __init__(self, func):
+def postback(isAsync=True):
+    def wrapper(func):
+        return Postback(func, isAsync)
+    return wrapper
+
+
+class Postback:
+    def __init__(self, func, isAsync=True):
         self.func = func
+        self.isAsync = isAsync
 
     def __call__(self, *args, **kwargs):
         action = self.func.__name__
@@ -89,15 +99,15 @@ class ConfessionsBot(Chatbot):
     def onMessage(self, sender, message):
         pass
 
-    @postback
+    @postback()
     def sendWelcome(self, sender):
         raise NotImplementedError
 
-    @postback
+    @postback()
     def listPages(self, sender):
         raise NotImplementedError
 
-    @postback
+    @postback()
     def sendPending(self, sender):
         raise NotImplementedError
 
@@ -106,25 +116,26 @@ class ConfessionsVoterBot(ConfessionsBot):
     def onMessage(self, sender, message):
         super().onMessage(sender, message)
 
-    @postback
+    @postback()
     def sendWelcome(self, sender):
         pass
 
-    @postback
+    @postback()
     def listPages(self, sender):
         pass
 
-    @postback
+    @postback()
     def acceptConfession(self, sender, confessionID=None):
         pass
 
-    @postback
+    @postback()
     def rejectConfession(self, sender, confessionID=None):
         pass
 
-    @postback
+    @postback()
     def sendPending(self, sender):
         pass
+
 
 class ConfessionsAdminBot(ConfessionsBot):
     def onMessage(self, sender, message):
@@ -229,18 +240,18 @@ class ConfessionsAdminBot(ConfessionsBot):
     #   Postbacks   #
     #################
 
-    @postback
+    @postback()
     def sendWelcome(self, sender):
         message = TextMessage("Hello! I'm glad you decided to use this app.")
         message.send(sender)
         self.sendLogin(sender)
 
-    @postback
+    @postback(isAsync=False)
     def listPages(self, sender):
         """ Doesn't actually list pages. Need permission first. (See actualListPages) """
         self.sendLogin(sender)
 
-    @postback
+    @postback()
     def managePage(self, sender, pageID=None, name=None, token=None):
         page = Page.findById(pageID)
         if page:
@@ -258,7 +269,7 @@ class ConfessionsAdminBot(ConfessionsBot):
             message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID, _external=True)))
             message.send(sender)
 
-    @postback
+    @postback()
     def acceptConfession(self, sender, confessionID=None):
         confession = Confession.findById(confessionID)
         if confession.status == "posted":
@@ -281,7 +292,7 @@ class ConfessionsAdminBot(ConfessionsBot):
         if not confession.page.hasPendingConfession():
             self.sendFreshConfession(confession.page)
 
-    @postback
+    @postback()
     def rejectConfession(self, sender, confessionID=None):
         confession = Confession.findById(confessionID)
         if confession.status != "pending":
@@ -294,7 +305,7 @@ class ConfessionsAdminBot(ConfessionsBot):
         if not confession.page.hasPendingConfession():
             self.sendFreshConfession(confession.page)
 
-    @postback
+    @postback()
     def sendPending(self, sender):
         pendingConfessions = Confession.getPending(sender)
         if len(pendingConfessions) == 0:

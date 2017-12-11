@@ -75,10 +75,12 @@ def objectUrl(pageID):
 pageUrl = objectUrl
 postUrl = objectUrl
 
+
 def loginUrl(sender, scopes):
     url = "https://www.facebook.com/v2.9/dialog/oauth"
     url += "?redirect_uri={}&client_id={}&scope={}".format(loginRedirectURI(sender), APP_ID, scopes)
     return url
+
 
 def loginRedirectURI(sender):
     return url_for("login_redirect", sender=sender, _external=True)
