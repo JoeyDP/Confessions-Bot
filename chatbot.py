@@ -11,6 +11,7 @@ ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
 MAX_MESSAGE_LENGTH = 600
 
+
 class Chatbot:
     def __init__(self):
         pass
@@ -50,7 +51,6 @@ class Chatbot:
         if type == "action":
             action = data["action"]
             pb = self.__getattribute__(action)
-            log(pb)
             args = data.get("args", dict())
             if not pb:
                 raise RuntimeError("No postback for action '{}'.".format(action))
@@ -125,6 +125,7 @@ class ConfessionsVoterBot(ConfessionsBot):
     @postback
     def sendPending(self, sender):
         pass
+
 
 class ConfessionsAdminBot(ConfessionsBot):
     def onMessage(self, sender, message):

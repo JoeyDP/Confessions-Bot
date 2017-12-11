@@ -26,6 +26,11 @@ csrf = CSRFProtect(app)
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 app.secret_key = VERIFY_TOKEN
 
+SERVER_NAME = os.environ.get("SERVER_NAME")
+if SERVER_NAME:
+    app.config.update(SERVER_NAME=SERVER_NAME)
+    
+
 @app.route('/', methods=['GET'])
 @csrf.exempt
 def verify():
@@ -150,11 +155,11 @@ def receivedMessage(sender, recipient, message):
         traceback.print_exc()
 
 
-
 @job('low', connection=rqCon)
 def receivedPostback(sender, recipient, payload):
     try:
-        adminBot.receivedPostback(sender, recipient, payload)
+        with app.app_context():
+            adminBot.receivedPostback(sender, recipient, payload)
     except Exception as e:
         adminBot.exceptionOccured(e)
         traceback.print_exc()
