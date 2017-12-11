@@ -12,6 +12,11 @@ ADMIN_SENDER_ID = os.environ.get("ADMIN_SENDER_ID")
 DISABLED = os.environ.get("DISABLED", 0) == '1'
 MAX_MESSAGE_LENGTH = 600
 
+
+def callPB(pb, *args, **kwargs):
+    return pb(*args, **kwargs)
+
+
 class Chatbot:
     def __init__(self):
         pass
@@ -55,7 +60,7 @@ class Chatbot:
             if not pb:
                 raise RuntimeError("No postback for action '{}'.".format(action))
             if pb.isAsync:
-                worker.queue.enqueue(pb.func, self, sender, **args)
+                worker.queue.enqueue(callPB, pb.func, self, sender, **args)
             else:
                 pb.func(self, sender, **args)
 
