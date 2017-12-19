@@ -26,6 +26,7 @@ def makeRequest(endpoint, method="GET", access_token=None, **parameters):
         raise RuntimeError("Unknown request method: " + str(method))
     if r.status_code == 200:
         debug("Url: " + str(url))
+        debug("Params: " + str(parameters))
         printCap = 640
         printText = str(r.text)[:printCap]
         if len(r.text) > printCap:
@@ -34,6 +35,7 @@ def makeRequest(endpoint, method="GET", access_token=None, **parameters):
         return json.loads(r.text)
     else:
         log("Failed to query {}".format(url))
+        log("with params: " + str(parameters))
         log(r.text)
         return None
 
@@ -151,7 +153,7 @@ class FBPage(FBObject):
                 return cover.get("source")
 
     def getRecentPosts(self):
-        data = self.query("feed")
+        data = self.query("posts")
         if data:
             posts = list()
             for postData in data.get("data"):
