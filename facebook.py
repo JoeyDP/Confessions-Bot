@@ -3,7 +3,7 @@ import requests
 import json
 from urllib.parse import urljoin
 from util import *
-from database import Page
+from database import Page, Confession
 from flask import url_for
 
 BASE_URL = "https://graph.facebook.com/v2.9/"
@@ -153,7 +153,7 @@ class FBPage(FBObject):
                 return cover.get("source")
 
     def getRecentPosts(self):
-        data = self.query("posts")
+        data = self.query("posts", limit=10)
         if data:
             posts = list()
             for postData in data.get("data"):
@@ -178,7 +178,7 @@ class FBPage(FBObject):
             if lastIndex:
                 index = lastIndex + 1
             else:
-                index = 1
+                index = Confession.getLastIndex() + 1
 
             message = "#{} {}".format(str(index), confession.text)
             response = self.post("feed", message=message)
