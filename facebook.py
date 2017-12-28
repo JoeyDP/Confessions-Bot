@@ -178,7 +178,7 @@ class FBPage(FBObject):
             if lastIndex:
                 index = lastIndex + 1
             else:
-                index = Confession.getLastIndex() + 1
+                index = Confession.getLastIndex(self.id) + 1
 
             message = "#{} {}".format(str(index), confession.text)
             response = self.post("feed", message=message)

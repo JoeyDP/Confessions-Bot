@@ -116,13 +116,14 @@ class Confession(SQLBase, Base):
         return pending
 
     @staticmethod
-    def getLastIndex():
+    def getLastIndex(page_id):
         query = Confession.session.query(func.max(Confession.index))
+        query.filter_by(page_id=page_id)
         result = query.scalar()
         return result if result is not None else 0
 
     def getReferencedConfession(self):
-        result = re.search(r'^(?:\#|\@)(\d+)\s', self.text)
+        result = re.search(r'^(?:\#|\@|\@\#)(\d+)\s', self.text)
         if result:
             index = result.group(1)
             if index:
