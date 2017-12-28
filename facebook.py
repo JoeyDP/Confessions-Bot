@@ -85,7 +85,7 @@ def loginUrl(sender, scopes):
 
 
 def loginRedirectURI(sender):
-    return url_for("login_redirect", sender=sender, _external=True, _method='https')
+    return url_for("login_redirect", sender=sender, _external=True)
 
 
 class FBObject:
