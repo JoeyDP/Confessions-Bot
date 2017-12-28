@@ -118,7 +118,7 @@ class Confession(SQLBase, Base):
     @staticmethod
     def getLastIndex(page_id):
         query = Confession.session.query(func.max(Confession.index))
-        query.filter_by(page_id=page_id)
+        query = query.filter_by(page_id=page_id)
         result = query.scalar()
         return result if result is not None else 0
 
