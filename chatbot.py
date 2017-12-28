@@ -251,13 +251,16 @@ class ConfessionsAdminBot(ConfessionsBot):
             page = Page()
             page.fb_id = pageID
             page.name = name
-            page.token = token
             page.admin_messenger_id = sender
             page.add()
             message = TextMessage("I am now managing the page " + str(name))
             message.send(sender)
-            message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID, _external=True)))
-            message.send(sender)
+
+        page.token = token
+        page.save()
+
+        message = TextMessage("Confessions need to be submitted to: " + str(url_for("confession_form", pageID=pageID, _external=True)))
+        message.send(sender)
 
     @postback
     def acceptConfession(self, sender, confessionID=None):
