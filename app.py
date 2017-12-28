@@ -51,10 +51,11 @@ def webpage():
 adminBot = chatbot.ConfessionsAdminBot()
 voterBot = chatbot.ConfessionsVoterBot()
 
-@app.route('/login/<sender>')
-def login_redirect(sender):
+@app.route('/login')
+def login_redirect():
     """ endpoint for redirect after login. """
 
+    sender = request.args.get('sender')
     code = request.args.get("code")
     if sender and code:
         adminBot.loggedIn(sender, code)
