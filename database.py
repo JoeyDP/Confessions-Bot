@@ -23,16 +23,23 @@ Session = sessionmaker(bind=engine)
 class Base:
     session = Session()
 
+    def commit(self):
+        try:
+            Base.session.commit()
+        except:
+            Base.session.rollback()
+            raise
+
     def add(self):
         Base.session.add(self)
-        Base.session.commit()
+        self.commit()
 
     def save(self):
-        Base.session.commit()
+        self.commit()
 
     def delete(self):
         Base.session.delete(self)
-        Base.session.commit()
+        self.commit()
 
 
 class Page(SQLBase, Base):
