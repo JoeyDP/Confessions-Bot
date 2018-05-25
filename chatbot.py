@@ -172,9 +172,10 @@ class ConfessionsAdminBot(ConfessionsBot):
             message.send(sender)
 
             # group pages by 10
-            for start in range(((len(pages)-1)//10)+1):
+            pageBatch = 10
+            for start in range(0, len(pages), pageBatch):
                 pagesMessage = GenericMessage()
-                for i in range(start, min(start+10, len(pages))):
+                for i in range(start, min(start+pageBatch, len(pages))):
                     page = pages[i]
                     pageID = page["id"]
                     name = page["name"]
