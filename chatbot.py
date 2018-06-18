@@ -225,6 +225,10 @@ class ConfessionsAdminBot(ConfessionsBot):
         fresh = page.getFirstFreshConfession()
         if fresh:
             self.sendConfession(fresh)
+        else:
+            admin = page.admin_messenger_id
+            msg = TextMessage("There are no more pending confessions.")
+            msg.send(admin)
 
 
     #################
