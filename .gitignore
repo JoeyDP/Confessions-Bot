@@ -104,3 +104,5 @@ ENV/
 # own rules
 .idea
 
+model.pkl
+

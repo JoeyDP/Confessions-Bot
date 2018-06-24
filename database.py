@@ -105,6 +105,10 @@ class Confession(SQLBase, Base):
         return Confession.session.query(Confession).filter_by(status=status).all()
 
     @staticmethod
+    def findByStatusAndPage(status, pageId):
+        return Confession.session.query(Confession).filter_by(status=status, page_id=pageId).all()
+
+    @staticmethod
     def getFirstFresh(page_id):
         query = Confession.session.query(Confession)
         query = query.filter_by(page_id=page_id, status="fresh")
