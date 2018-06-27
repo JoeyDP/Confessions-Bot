@@ -27,6 +27,8 @@ csrf = CSRFProtect(app)
 VERIFY_TOKEN = os.environ["VERIFY_TOKEN"]
 app.secret_key = VERIFY_TOKEN
 
+CLIENT_SECRET = os.environ["CLIENT_SECRET"]
+
 app.config.update(PREFERRED_URL_SCHEME='https')
 
 SERVER_NAME = os.environ.get("SERVER_NAME")
@@ -134,24 +136,25 @@ def webhook():
 
 
 def validateRequest(request):
-    log(request.headers)
     advertised = request.headers.get("X-Hub-Signature")
 
     if advertised is None:
         return False
 
-    data = request.get_data(parse_form_data=True)
+    advertised = advertised.replace("sha1=", "")
+
+    data = request.get_data()
     log("Request data:")
     log(data)
 
     log("Signature:")
     log(advertised)
 
-    received = "sha1={}".format(hmac.new(
-        key=VERIFY_TOKEN.encode('raw_unicode_escape'),
+    received = hmac.new(
+        key=CLIENT_SECRET.encode('raw_unicode_escape'),
         msg=data,
         digestmod=hashlib.sha1
-    ).hexdigest())
+    ).hexdigest()
 
     log("Outcome:")
     log(received)
