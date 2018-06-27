@@ -129,35 +129,24 @@ def webhook():
     except Exception as e:
         adminBot.exceptionOccured(e)
         traceback.print_exc()
-        # disabled for testing
-        # raise e
+        raise e
 
     return "ok", 200
 
 
 def validateRequest(request):
     advertised = request.headers.get("X-Hub-Signature")
-
     if advertised is None:
         return False
 
     advertised = advertised.replace("sha1=", "")
-
     data = request.get_data()
-    log("Request data:")
-    log(data)
-
-    log("Signature:")
-    log(advertised)
 
     received = hmac.new(
         key=CLIENT_SECRET.encode('raw_unicode_escape'),
         msg=data,
         digestmod=hashlib.sha1
     ).hexdigest()
-
-    log("Outcome:")
-    log(received)
 
     return hmac.compare_digest(
         advertised,
