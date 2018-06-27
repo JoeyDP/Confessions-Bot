@@ -119,6 +119,7 @@ def webhook():
     try:
         if validateRequest(request):
             receivedRequest(request)
+            request.get_data(parse_form_data=True)
         else:
             error = "Invalid request received: " + str(request)
             log(error)
@@ -127,6 +128,7 @@ def webhook():
     except Exception as e:
         adminBot.exceptionOccured(e)
         traceback.print_exc()
+        raise e
 
     return "ok", 200
 
@@ -138,15 +140,16 @@ def validateRequest(request):
     if advertised is None:
         return False
 
+    data = request.get_data(parse_form_data=True)
     log("Request data:")
-    log(request.get_data())
+    log(data)
 
     log("Signature:")
     log(advertised)
 
     received = "sha1={}".format(hmac.new(
-        key=VERIFY_TOKEN.encode('utf-8'),
-        msg=request.get_data(),
+        key=VERIFY_TOKEN.encode('raw_unicode_escape'),
+        msg=data,
         digestmod=hashlib.sha1
     ).hexdigest())
 
