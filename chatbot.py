@@ -153,12 +153,15 @@ class ConfessionsAdminBot(ConfessionsBot):
         message.send(sender)
         self.sendLogin(sender)
 
+    def sendErrorMessage(self, msg):
+        if ADMIN_SENDER_ID:
+            notification = TextMessage("Error Occurred:\t{}".format(str(msg)))
+            notification.send(ADMIN_SENDER_ID)
+
     def exceptionOccured(self, e):
         log("Exception in request.")
         log(str(e))
-        if ADMIN_SENDER_ID:
-            notification = TextMessage("Exception:\t{}".format(str(e)))
-            notification.send(ADMIN_SENDER_ID)
+        self.sendErrorMessage(str(e))
 
     def actualListPages(self, sender, clientToken):
         pages = facebook.listManagedPages(clientToken)

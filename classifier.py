@@ -20,7 +20,7 @@ bacli.setDescription("Data mining tools for Confessions")
 
 @bacli.command
 def train():
-    """ Train an store classifier. """
+    """ Train and store classifier. """
     vectorizer = CountVectorizer(ngram_range=(1, 2),
                                  stop_words='english',
                                  strip_accents='unicode'

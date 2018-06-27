@@ -1,7 +1,8 @@
-import os
 import traceback
 
 from util import *
+import hmac
+import hashlib
 from message import *
 import chatbot
 import facebook
@@ -116,12 +117,40 @@ def confession_status(confessionID):
 def webhook():
     """ endpoint for processing incoming messaging events. """
     try:
-        receivedRequest(request)
+        if validateRequest(request):
+            receivedRequest(request)
+        else:
+            error = "Invalid request received: " + str(request)
+            log(error)
+            adminBot.sendErrorMessage(error)
+            abort(400)
     except Exception as e:
         adminBot.exceptionOccured(e)
         traceback.print_exc()
 
     return "ok", 200
+
+
+def validateRequest(request):
+    log(request.headers)
+    advertised = request.headers.get("X-Hub-Signature")
+
+    if advertised is None:
+        return False
+
+    received = "sha1={}".format(hmac.new(
+        VERIFY_TOKEN,
+        request.data,
+        hashlib.sha1
+    ).hexdigest())
+
+    log(advertised)
+    log(received)
+
+    return hmac.compare_digest(
+        advertised,
+        received
+    )
 
 
 def receivedRequest(request):
