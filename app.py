@@ -119,7 +119,6 @@ def webhook():
     try:
         if validateRequest(request):
             receivedRequest(request)
-            request.get_data(parse_form_data=True)
         else:
             error = "Invalid request received: " + str(request)
             log(error)
@@ -128,7 +127,8 @@ def webhook():
     except Exception as e:
         adminBot.exceptionOccured(e)
         traceback.print_exc()
-        raise e
+        # disabled for testing
+        # raise e
 
     return "ok", 200
 
