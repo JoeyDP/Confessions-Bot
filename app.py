@@ -138,13 +138,19 @@ def validateRequest(request):
     if advertised is None:
         return False
 
+    log("Request data:")
+    log(request.get_data())
+
+    log("Signature:")
+    log(advertised)
+
     received = "sha1={}".format(hmac.new(
-        VERIFY_TOKEN,
-        request.data,
-        hashlib.sha1
+        key=VERIFY_TOKEN.encode('utf-8'),
+        msg=request.get_data(),
+        digestmod=hashlib.sha1
     ).hexdigest())
 
-    log(advertised)
+    log("Outcome:")
     log(received)
 
     return hmac.compare_digest(
