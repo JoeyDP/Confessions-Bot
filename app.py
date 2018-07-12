@@ -156,6 +156,7 @@ def validateRequest(request):
 
 def receivedRequest(request):
     data = request.get_json()
+    debug(data)
 
     if data["object"] == "page":
 
