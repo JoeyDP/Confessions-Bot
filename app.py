@@ -169,7 +169,7 @@ def receivedRequest(request):
 
                 # Don't mind this piece of code. It forwards requests from specific pages to another bot.
                 if recipient in ["942723909080518", "1911537602473957"]:
-                    forward.delay('https://party-post.herokuapp.com/messenger')
+                    forward('https://party-post.herokuapp.com/messenger')
                     return
 
                 if messaging_event.get("message"):  # someone sent us a message
@@ -184,7 +184,6 @@ def receivedRequest(request):
                     receivedPostback.delay(sender, recipient, payload)
 
 
-@job('low', connection=rqCon)
 def forward(destinationUrl):
     """ Forward requests to other bot. Source: https://stackoverflow.com/a/36601467 """
     resp = requests.request(
