@@ -58,7 +58,7 @@ class Chatbot:
 
     def adminMessage(self, sender, message):
         # TODO: create @command decorator
-        if message == "setup":
+        if message.lower() == "setup":
             return self.runSetup(sender, message)
 
         return False
