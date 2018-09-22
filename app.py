@@ -82,7 +82,10 @@ def confession_form(pageID):
         try:
             confession.add()
             if not confession.page.hasPendingConfession():
-                adminBot.sendFreshConfession(confession.page)
+                try:
+                    adminBot.sendFreshConfession(confession.page)
+                except RuntimeError:
+                    log("Failed to send fresh confession to page admin")
 
             log("new confession id: " + str(confession.id))
             return redirect(url_for('confession_status', confessionID=confession.id))
