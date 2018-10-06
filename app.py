@@ -96,7 +96,7 @@ def confession_form(pageID):
         except SQLAlchemyError as e:
             log(str(e))
             Base.session.rollback()
-            form.confession.errors.append("Your confessions is not valid.")
+            form.confession.errors.append("Your confession is not valid.")
     page = Page.findById(pageID)
     if page:
         fbPage = FBPage(page)
