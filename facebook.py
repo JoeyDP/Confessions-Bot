@@ -50,8 +50,8 @@ def postFacebook(endpoint, accessToken, **parameters):
 
 
 def getClientTokenFromCode(sender, code):
-    redirect = loginRedirectURI(sender)
-    data = makeRequest("oauth/access_token", client_id=APP_ID, redirect_uri=redirect, client_secret=CLIENT_SECRET, code=code)
+    redirect = loginRedirectURI()
+    data = makeRequest("oauth/access_token", client_id=APP_ID, redirect_uri=redirect, state=sender, client_secret=CLIENT_SECRET, code=code)
     if not data:
         return None
 
@@ -81,14 +81,15 @@ postUrl = objectUrl
 
 def loginUrl(sender, scopes):
     url = "https://www.facebook.com/v2.9/dialog/oauth"
-    redirectURI = urllib.parse.quote(loginRedirectURI(sender))
+    redirectURI = urllib.parse.quote(loginRedirectURI())
     url += "?redirect_uri={}&client_id={}&scope={}".format(redirectURI, APP_ID, scopes)
+    url += "&state={}".format(str(sender))
     log("Login URL: " + url)
     return url
 
 
-def loginRedirectURI(sender):
-    return url_for("login_redirect", _external=True) + "?sender={}".format(str(sender))
+def loginRedirectURI():
+    return url_for("login_redirect", _external=True)
 
 
 class FBObject:

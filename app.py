@@ -62,7 +62,7 @@ voterBot = chatbot.ConfessionsVoterBot()
 def login_redirect():
     """ endpoint for redirect after login. """
 
-    sender = request.args.get('sender')
+    sender = request.args.get('state')
     code = request.args.get("code")
     if sender and code:
         adminBot.loggedIn(sender, code)
