@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 from util import *
 from database import Page, Confession
 from flask import url_for
+import urllib
 
 BASE_URL = "https://graph.facebook.com/v2.9/"
 FB_URL = "https://www.facebook.com/"
@@ -81,11 +82,12 @@ postUrl = objectUrl
 def loginUrl(sender, scopes):
     url = "https://www.facebook.com/v2.9/dialog/oauth"
     url += "?redirect_uri={}&client_id={}&scope={}".format(loginRedirectURI(sender), APP_ID, scopes)
+    log("Login URL: " + url)
     return url
 
 
 def loginRedirectURI(sender):
-    return url_for("login_redirect", sender=sender, _external=True)
+    return urllib.parse.quote(url_for("login_redirect", _external=True) + "?sender={}".format(str(sender)))
 
 
 class FBObject:
