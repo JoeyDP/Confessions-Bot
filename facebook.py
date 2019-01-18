@@ -81,13 +81,14 @@ postUrl = objectUrl
 
 def loginUrl(sender, scopes):
     url = "https://www.facebook.com/v2.9/dialog/oauth"
-    url += "?redirect_uri={}&client_id={}&scope={}".format(loginRedirectURI(sender), APP_ID, scopes)
+    redirectURI = urllib.parse.quote(loginRedirectURI(sender))
+    url += "?redirect_uri={}&client_id={}&scope={}".format(redirectURI, APP_ID, scopes)
     log("Login URL: " + url)
     return url
 
 
 def loginRedirectURI(sender):
-    return urllib.parse.quote(url_for("login_redirect", _external=True) + "?sender={}".format(str(sender)))
+    return url_for("login_redirect", _external=True) + "?sender={}".format(str(sender))
 
 
 class FBObject:
