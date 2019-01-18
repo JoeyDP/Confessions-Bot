@@ -132,7 +132,7 @@ class ConfessionsAdminBot(ConfessionsBot):
         super().onMessage(sender, message)
 
     def sendLogin(self, sender):
-        scopes = ",".join(["manage_pages", "publish_pages", "pages_show_list", "publish_actions"])
+        scopes = ",".join(["manage_pages", "publish_pages", "pages_show_list"])
         url = facebook.loginUrl(sender, scopes)
         button = URLButton("Grant access", url)
         loginMessage = ButtonMessage("I need access to your pages.", button)
